@@ -1,6 +1,6 @@
 # Ash Archival
 
-A small but useful resource extension for [Ash Framework](https://github.com/ash-project/ash).
+A small but useful resource extension for [Ash Framework](https://github.com/ash-project/ash), which configures resources to be archived instead of destroyed.
 
 ## Installation
 
@@ -13,8 +13,3 @@ def deps do
   ]
 end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/archival>.
-
