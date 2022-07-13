@@ -2,10 +2,7 @@ defmodule AshArchival.Resource do
   @moduledoc """
   Configures a resource to be archived instead of destroyed for all destroy actions.
 
-  What does this resource extension do?
-
-  1. Adds a private `archived_at` `utc_datetime_usec` attribute.
-  1. Marks all
+  For more information, see {{link:guide:ash_archival:Archival}}.
   """
 
   @archive %Ash.Dsl.Section{
