@@ -1,6 +1,6 @@
-defmodule Ash.DocIndex.AshDocIndex do
+defmodule AshArchival.DocIndex do
   @moduledoc """
-  Some documentation about Ash.
+  Some documentation for AshArchival.
   """
 
   use Ash.DocIndex,
