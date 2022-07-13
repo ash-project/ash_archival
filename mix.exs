@@ -14,6 +14,7 @@ defmodule AshArchival.MixProject do
       source_url: "https://github.com/ash-project/ash_archival",
       homepage_url: "https://github.com/ash-project/ash_archival",
       start_permanent: Mix.env() == :prod,
+      description: @description,
       aliases: aliases(),
       package: package(),
       deps: deps(),
