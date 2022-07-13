@@ -2,7 +2,7 @@ import Config
 
 if Mix.env() == :dev do
   config :git_ops,
-    mix_project: AshPhoenix.MixProject,
+    mix_project: AshArchival.MixProject,
     changelog_file: "CHANGELOG.md",
     repository_url: "https://github.com/ash-project/ash_archival",
     # Instructs the tool to manage your mix version in your `mix.exs` file
