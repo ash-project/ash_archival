@@ -2,7 +2,7 @@ defmodule AshArchival.Resource do
   @moduledoc """
   Configures a resource to be archived instead of destroyed for all destroy actions.
 
-  For more information, see {{link:guide:ash_archival:Archival}}.
+  For more information, see {{link:ash_archival:guide:Archival}}.
   """
 
   @archive %Ash.Dsl.Section{
