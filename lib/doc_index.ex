@@ -27,6 +27,9 @@ defmodule AshArchival.DocIndex do
   end
 
   @impl true
+  def default_guide, do: "Archival"
+
+  @impl true
   @spec code_modules :: [{String.t(), list(module)}]
   def code_modules do
     [
