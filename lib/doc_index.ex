@@ -4,7 +4,7 @@ defmodule AshArchival.DocIndex do
   """
 
   use Ash.DocIndex,
-    otp_app: :ash,
+    otp_app: :ash_archival,
     guides_from: [
       "documentation/**/*.md"
     ]
