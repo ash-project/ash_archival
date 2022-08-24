@@ -9,7 +9,7 @@ The package can be installed by adding `ash_archival` to your list of dependenci
 ```elixir
 def deps do
   [
-    {:archival, "~> 0.1.1-rc.2"}
+    {:archival, "~> 0.1.2"}
   ]
 end
 ```
