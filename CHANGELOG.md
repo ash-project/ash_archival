@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.1.1-rc.3](https://github.com/ash-project/ash_archival/compare/v0.1.1-rc.2...v0.1.1-rc.3) (2022-08-24)
+
+
+
+
+### Bug Fixes:
+
+* fix doc index Info reference
+
+* remove super dumb typo
+
 ## [v0.1.1-rc.2](https://github.com/ash-project/ash_archival/compare/v0.1.1-rc.1...v0.1.1-rc.2) (2022-08-24)
 
 
