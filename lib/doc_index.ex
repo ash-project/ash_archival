@@ -29,7 +29,7 @@ defmodule AshArchival.DocIndex do
     [
       {"Introspection",
        [
-         AshArchival.Info
+         AshArchival.Resource.Info
        ]}
     ]
   end
