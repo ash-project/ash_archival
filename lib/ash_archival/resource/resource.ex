@@ -1,11 +1,5 @@
 defmodule AshArchival.Resource do
-  @moduledoc """
-  Configures a resource to be archived instead of destroyed for all destroy actions.
-
-  For more information, see {{link:ash_archival:guide:Archival}}.
-  """
-
-  @archive %Ash.Dsl.Section{
+  @archive %Spark.Dsl.Section{
     name: :archive,
     describe: "A section for configuring how archival is configured for a resource.",
     schema: [
@@ -21,11 +15,26 @@ defmodule AshArchival.Resource do
     ]
   }
 
-  use Ash.Dsl.Extension,
+  @moduledoc """
+  Configures a resource to be archived instead of destroyed for all destroy actions.
+
+  For more information, see {{link:ash_archival:guide:Archival}}.
+
+  <!--- ash-hq-hide-start --> <!--- -->
+
+  ## DSL Documentation
+
+  ### Index
+
+  #{Spark.Dsl.Extension.doc_index([@archive])}
+
+  ### Docs
+
+  #{Spark.Dsl.Extension.doc([@archive])}
+  <!--- ash-hq-hide-stop--> <!--- -->
+  """
+
+  use Spark.Dsl.Extension,
     sections: [@archive],
     transformers: [AshArchival.Resource.Transformers.SetupArchival]
-
-  def archive_related(resource) do
-    Ash.Dsl.Extension.get_opt(resource, [:archive], :archive_related, [])
-  end
 end

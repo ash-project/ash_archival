@@ -1,10 +1,10 @@
 defmodule AshArchival.Resource.Changes.ArchiveRelated do
-  @moduledoc "Archives any related items configured to be archived"
+  @moduledoc false
   use Ash.Resource.Change
   require Ash.Query
 
   def change(changeset, _, _) do
-    archive_related = AshArchival.Resource.archive_related(changeset.resource)
+    archive_related = AshArchival.Resource.Info.archive_related(changeset.resource)
 
     if Enum.empty?(archive_related) do
       changeset

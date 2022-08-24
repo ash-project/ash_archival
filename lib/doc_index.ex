@@ -1,9 +1,7 @@
 defmodule AshArchival.DocIndex do
-  @moduledoc """
-  Some documentation for AshArchival.
-  """
+  @moduledoc false
 
-  use Ash.DocIndex,
+  use Spark.DocIndex,
     otp_app: :ash_archival,
     guides_from: [
       "documentation/**/*.md"
@@ -27,15 +25,11 @@ defmodule AshArchival.DocIndex do
   end
 
   @impl true
-  def default_guide, do: "Archival"
-
-  @impl true
-  @spec code_modules :: [{String.t(), list(module)}]
   def code_modules do
     [
-      {"Archival",
+      {"Introspection",
        [
-         AshArchival.Resource
+         AshArchival.Info
        ]}
     ]
   end

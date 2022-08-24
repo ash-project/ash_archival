@@ -1,5 +1,3 @@
 defmodule AshArchival do
-  @moduledoc """
-  Documentation for `AshArchival`.
-  """
+  @moduledoc false
 end

@@ -1,6 +1,6 @@
 defmodule AshArchival.Resource.Transformers.SetupArchival do
   @moduledoc "Sets up the required resource structure for archival"
-  use Ash.Dsl.Transformer
+  use Spark.Dsl.Transformer
 
   @after_transformers [
     Ash.Resource.Transformers.ValidatePrimaryActions
@@ -11,10 +11,10 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
     Ash.Resource.Transformers.SetTypes
   ]
 
-  alias Ash.Dsl.Transformer
+  alias Spark.Dsl.Transformer
 
-  def transform(resource, dsl_state) do
-    if Ash.Resource.Info.embedded?(resource) do
+  def transform(dsl_state) do
+    if Transformer.get_persisted(dsl_state, :embedded?, false) do
       {:ok, dsl_state}
     else
       dsl_state

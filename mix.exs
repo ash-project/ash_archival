@@ -33,10 +33,47 @@ defmodule AshArchival.MixProject do
     ]
   end
 
+  defp extras() do
+    "documentation/**/*.md"
+    |> Path.wildcard()
+    |> Enum.map(fn path ->
+      title =
+        path
+        |> Path.basename(".md")
+        |> String.split(~r/[-_]/)
+        |> Enum.map(&String.capitalize/1)
+        |> Enum.join(" ")
+        |> case do
+          "F A Q" ->
+            "FAQ"
+
+          other ->
+            other
+        end
+
+      {String.to_atom(path),
+       [
+         title: title
+       ]}
+    end)
+  end
+
   defp docs do
     [
-      main: "readme",
-      source_ref: "v#{@version}"
+      main: "archival",
+      source_ref: "v#{@version}",
+      extras: extras(),
+      groups_for_modules: [
+        Extension: [
+          AshArchival.Resource
+        ],
+        Introspection: [
+          AshArchival.Resource.Info
+        ],
+        Transformers: [
+          ~r/AshArchival.Resource.Transformers.*/
+        ]
+      ]
     ]
   end
 
@@ -50,7 +87,7 @@ defmodule AshArchival.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ash, ash_version("~> 1.52.0-rc.20")},
+      {:ash, ash_version("~> 2.0.0-pre.4")},
       {:git_ops, "~> 2.4.5", only: :dev},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:ex_check, "~> 0.14", only: :dev},
