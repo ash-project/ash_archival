@@ -25,7 +25,7 @@ defmodule AshArchival.MixProject do
 
   defp package do
     [
-      name: :ash_postgres,
+      name: :ash_archival,
       licenses: ["MIT"],
       links: %{
         GitHub: "https://github.com/ash-project/ash_archival"
