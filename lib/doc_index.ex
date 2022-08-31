@@ -18,7 +18,7 @@ defmodule AshArchival.DocIndex do
       %{
         module: AshArchival.Resource,
         name: "Resource Archival",
-        target: "Ash.Resource.Archival",
+        target: "Ash.Resource",
         type: "Resource"
       }
     ]
