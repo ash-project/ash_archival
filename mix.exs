@@ -87,7 +87,7 @@ defmodule AshArchival.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ash, ash_version("~> 2.0.0-pre.4")},
+      {:ash, ash_version("~> 2.0")},
       {:git_ops, "~> 2.4.5", only: :dev},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:ex_check, "~> 0.14", only: :dev},
@@ -104,7 +104,7 @@ defmodule AshArchival.MixProject do
       sobelow:
         "sobelow --skip -i Config.Secrets --ignore-files lib/migration_generator/migration_generator.ex",
       credo: "credo --strict",
-      "ash.formatter": "ash.formatter --extensions AshArchival.Resource"
+      "spark.formatter": "spark.formatter --extensions AshArchival.Resource"
     ]
   end
 

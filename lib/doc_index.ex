@@ -12,12 +12,12 @@ defmodule AshArchival.DocIndex do
   def for_library, do: "ash_archival"
 
   @impl true
-  @spec extensions() :: list(Ash.DocIndex.extension())
   def extensions do
     [
       %{
         module: AshArchival.Resource,
         name: "Resource Archival",
+        default_for_target?: false,
         target: "Ash.Resource",
         type: "Resource"
       }
