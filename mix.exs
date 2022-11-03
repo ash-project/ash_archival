@@ -105,6 +105,7 @@ defmodule AshArchival.MixProject do
     [
       sobelow:
         "sobelow --skip -i Config.Secrets --ignore-files lib/migration_generator/migration_generator.ex",
+      docs: ["docs", "ash.replace_doc_links"],
       credo: "credo --strict",
       "spark.formatter": "spark.formatter --extensions AshArchival.Resource"
     ]
