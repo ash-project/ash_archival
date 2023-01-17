@@ -18,7 +18,7 @@ defmodule AshArchival.Resource do
   @moduledoc """
   Configures a resource to be archived instead of destroyed for all destroy actions.
 
-  For more information, see {{link:ash_archival:guide:Archival}}.
+  For more information, see [Archival](/documentation/topics/archival.md)
 
   <!--- ash-hq-hide-start --> <!--- -->
 

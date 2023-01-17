@@ -65,6 +65,15 @@ defmodule AshArchival.MixProject do
       main: "archival",
       source_ref: "v#{@version}",
       extras: extras(),
+      spark_extensions: [
+        %{
+          module: AshArchival.Resource,
+          name: "Resource Archival",
+          default_for_target?: false,
+          target: "Ash.Resource",
+          type: "Resource"
+        }
+      ],
       groups_for_modules: [
         Extension: [
           AshArchival.Resource
