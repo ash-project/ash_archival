@@ -35,44 +35,21 @@ defmodule AshArchival.MixProject do
     ]
   end
 
-  defp extras() do
-    "documentation/**/*.md"
-    |> Path.wildcard()
-    |> Enum.map(fn path ->
-      title =
-        path
-        |> Path.basename(".md")
-        |> String.split(~r/[-_]/)
-        |> Enum.map(&String.capitalize/1)
-        |> Enum.join(" ")
-        |> case do
-          "F A Q" ->
-            "FAQ"
-
-          other ->
-            other
-        end
-
-      {String.to_atom(path),
-       [
-         title: title
-       ]}
-    end)
-  end
-
   defp docs do
     [
       main: "archival",
       source_ref: "v#{@version}",
-      extras: extras(),
-      spark_extensions: [
-        %{
-          module: AshArchival.Resource,
-          name: "Resource Archival",
-          default_for_target?: false,
-          target: "Ash.Resource",
-          type: "Resource"
-        }
+      extras: Path.wildcard("documentation/**/*.md"),
+      spark: [
+        extensions: [
+          %{
+            module: AshArchival.Resource,
+            name: "Resource Archival",
+            default_for_target?: false,
+            target: "Ash.Resource",
+            type: "Resource"
+          }
+        ]
       ],
       groups_for_modules: [
         Extension: [
@@ -99,12 +76,12 @@ defmodule AshArchival.MixProject do
   defp deps do
     [
       {:ash, ash_version("~> 2.0")},
-      {:git_ops, "~> 2.4.5", only: :dev},
-      {:ex_doc, "~> 0.22", only: :dev, runtime: false},
-      {:ex_check, "~> 0.14", only: :dev},
-      {:credo, ">= 0.0.0", only: :dev, runtime: false},
-      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
-      {:sobelow, ">= 0.0.0", only: :dev, runtime: false},
+      {:git_ops, "~> 2.4.5", only: [:dev, :test]},
+      {:ex_doc, "~> 0.22", only: [:dev, :test], runtime: false},
+      {:ex_check, "~> 0.14", only: [:dev, :test]},
+      {:credo, ">= 0.0.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, ">= 0.0.0", only: [:dev, :test], runtime: false},
+      {:sobelow, ">= 0.0.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.14", only: [:dev, :test]},
       {:elixir_sense, github: "elixir-lsp/elixir_sense", only: [:dev, :test]}
     ]
