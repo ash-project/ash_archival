@@ -53,6 +53,7 @@ defmodule AshArchival.MixProject do
       ],
       groups_for_modules: [
         Extension: [
+          AshArchival,
           AshArchival.Resource
         ],
         Introspection: [

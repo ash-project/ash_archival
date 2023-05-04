@@ -1,3 +1,5 @@
 defmodule AshArchival do
-  @moduledoc false
+  @moduledoc """
+  An Archival extension for `Ash.Resource`
+  """
 end
