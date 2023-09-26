@@ -1,5 +1,6 @@
 defmodule AshArchival.Resource.Transformers.SetupArchival do
-  @moduledoc "Sets up the required resource structure for archival"
+  @moduledoc false
+  # Sets up the required resource structure for archival
   use Spark.Dsl.Transformer
 
   @after_transformers [

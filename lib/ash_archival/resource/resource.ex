@@ -6,10 +6,7 @@ defmodule AshArchival.Resource do
       archive_related: [
         type: {:list, :atom},
         doc: """
-        A list of relationships that should have all related items archived when this is archived.
-        Note: this is currently not optimized. It simply reads the relationship and archives each one
-        (by calling its primary destroy, so the related resource must also use the archival extension).
-        When bulk actions are supported by Ash then this can be updated to use those.
+        A list of relationships that should have all related items archived when this is archived. Note: this is currently not optimized. It simply reads the relationship and archives each one.
         """
       ]
     ]

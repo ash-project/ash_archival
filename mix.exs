@@ -35,11 +35,57 @@ defmodule AshArchival.MixProject do
     ]
   end
 
+  defp extras do
+    "documentation/**/*.{md,livemd,cheatmd}"
+    |> Path.wildcard()
+    |> Enum.map(fn path ->
+      title =
+        path
+        |> Path.basename(".md")
+        |> Path.basename(".livemd")
+        |> Path.basename(".cheatmd")
+        |> String.split(~r/[-_]/)
+        |> Enum.map_join(" ", &capitalize/1)
+        |> case do
+          "F A Q" ->
+            "FAQ"
+
+          other ->
+            other
+        end
+
+      {String.to_atom(path),
+       [
+         title: title,
+         default: title == "Get Started"
+       ]}
+    end)
+  end
+
+  defp capitalize(string) do
+    string
+    |> String.split(" ")
+    |> Enum.map(fn string ->
+      [hd | tail] = String.graphemes(string)
+      String.capitalize(hd) <> Enum.join(tail)
+    end)
+  end
+
+  defp groups_for_extras do
+    [
+      Tutorials: ~r'documentation/tutorials',
+      "How To": ~r'documentation/how_to',
+      Topics: ~r'documentation/topics',
+      DSLs: ~r'documentation/dsls'
+    ]
+  end
+
   defp docs do
     [
       main: "archival",
       source_ref: "v#{@version}",
-      extras: Path.wildcard("documentation/**/*.md"),
+      extras: extras(),
+      groups_for_extras: groups_for_extras(),
       spark: [
         extensions: [
           %{
@@ -58,9 +104,6 @@ defmodule AshArchival.MixProject do
         ],
         Introspection: [
           AshArchival.Resource.Info
-        ],
-        Transformers: [
-          ~r/AshArchival.Resource.Transformers.*/
         ]
       ]
     ]
@@ -92,9 +135,17 @@ defmodule AshArchival.MixProject do
     [
       sobelow:
         "sobelow --skip -i Config.Secrets --ignore-files lib/migration_generator/migration_generator.ex",
-      docs: ["docs", "ash.replace_doc_links"],
+      docs: [
+        "spark.cheat_sheets",
+        "docs",
+        "ash.replace_doc_links",
+        "spark.cheat_sheets_in_search"
+      ],
       credo: "credo --strict",
-      "spark.formatter": "spark.formatter --extensions AshArchival.Resource"
+      "spark.formatter": "spark.formatter --extensions AshArchival.Resource",
+      "spark.cheat_sheets": "spark.cheat_sheets --extensions AshArchival.Resource",
+      "spark.cheat_sheets_in_search":
+        "spark.cheat_sheets_in_search --extensions AshArchival.Resource"
     ]
   end
 
