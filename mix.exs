@@ -121,7 +121,7 @@ defmodule AshArchival.MixProject do
     [
       {:ash, ash_version("~> 2.0")},
       {:git_ops, "~> 2.4.5", only: [:dev, :test]},
-      {:ex_doc, "~> 0.22", only: [:dev, :test], runtime: false},
+      {:ex_doc, github: "elixir-lang/ex_doc", only: [:dev, :test], runtime: false},
       {:ex_check, "~> 0.14", only: [:dev, :test]},
       {:credo, ">= 0.0.0", only: [:dev, :test], runtime: false},
       {:dialyxir, ">= 0.0.0", only: [:dev, :test], runtime: false},
