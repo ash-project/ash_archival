@@ -101,17 +101,6 @@ defmodule AshArchival.MixProject do
           """
         end
       end,
-      spark: [
-        extensions: [
-          %{
-            module: AshArchival.Resource,
-            name: "Resource Archival",
-            default_for_target?: false,
-            target: "Ash.Resource",
-            type: "Resource"
-          }
-        ]
-      ],
       groups_for_modules: [
         Extension: [
           AshArchival,
