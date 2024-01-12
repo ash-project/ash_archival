@@ -1,4 +1,4 @@
-### Un-archiving
+# Un-archiving
 
 At the moment, there is no way to unarchive an entry with a simple action on that resource. However, if you define a simple resource that uses the same storage under the hood (e.g same database table), but does *not* use the archival extension. You could then fabricate unarchival with something like this (this is not vetted, it is a pseudo-code example):
 

@@ -35,57 +35,21 @@ defmodule AshArchival.MixProject do
     ]
   end
 
-  defp extras do
-    "documentation/**/*.{md,livemd,cheatmd}"
-    |> Path.wildcard()
-    |> Enum.map(fn path ->
-      title =
-        path
-        |> Path.basename(".md")
-        |> Path.basename(".livemd")
-        |> Path.basename(".cheatmd")
-        |> String.split(~r/[-_]/)
-        |> Enum.map_join(" ", &capitalize/1)
-        |> case do
-          "F A Q" ->
-            "FAQ"
-
-          other ->
-            other
-        end
-
-      {String.to_atom(path),
-       [
-         title: title,
-         default: title == "Get Started"
-       ]}
-    end)
-  end
-
-  defp capitalize(string) do
-    string
-    |> String.split(" ")
-    |> Enum.map(fn string ->
-      [hd | tail] = String.graphemes(string)
-      String.capitalize(hd) <> Enum.join(tail)
-    end)
-  end
-
-  defp groups_for_extras do
-    [
-      Tutorials: ~r'documentation/tutorials',
-      "How To": ~r'documentation/how_to',
-      Topics: ~r'documentation/topics',
-      DSLs: ~r'documentation/dsls'
-    ]
-  end
-
   defp docs do
     [
       main: "archival",
       source_ref: "v#{@version}",
-      extras: extras(),
-      groups_for_extras: groups_for_extras(),
+      extras: [
+        "documentation/topics/archival.md",
+        "documentation/topics/unarchiving.md",
+        "documentation/dsls/DSL:-AshArchival.Resource.cheatmd"
+      ],
+      groups_for_extras: [
+        Tutorials: ~r'documentation/tutorials',
+        "How To": ~r'documentation/how_to',
+        Topics: ~r'documentation/topics',
+        DSLs: ~r'documentation/dsls'
+      ],
       before_closing_head_tag: fn type ->
         if type == :html do
           """
