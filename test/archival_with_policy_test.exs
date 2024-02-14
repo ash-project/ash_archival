@@ -1,10 +1,11 @@
-defmodule ArchivalTest do
+defmodule ArchivalWithPolicyTest do
   use ExUnit.Case
 
   defmodule Author do
     use Ash.Resource,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshArchival.Resource],
+      authorizers: [Ash.Policy.Authorizer]
 
     ets do
       table(:authors)
@@ -24,7 +25,15 @@ defmodule ArchivalTest do
     end
 
     relationships do
-      has_many(:posts, ArchivalTest.Post)
+      has_many(:posts, ArchivalWithPolicyTest.Post)
+    end
+
+    policies do
+      policy always() do
+        authorize_if(action_type(:create))
+        authorize_if(action_type(:read))
+        authorize_if(actor_attribute_equals(:admin, true))
+      end
     end
   end
 
@@ -50,7 +59,8 @@ defmodule ArchivalTest do
   defmodule Post do
     use Ash.Resource,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshArchival.Resource],
+      authorizers: [Ash.Policy.Authorizer]
 
     ets do
       table(:posts)
@@ -74,7 +84,15 @@ defmodule ArchivalTest do
         attribute_writable?(true)
       end
 
-      has_many(:comments, ArchivalTest.Comment)
+      has_many(:comments, ArchivalWithPolicyTest.Comment)
+    end
+
+    policies do
+      policy always() do
+        authorize_if(action_type(:create))
+        authorize_if(action_type(:read))
+        authorize_if(actor_attribute_equals(:admin, true))
+      end
     end
   end
 
@@ -100,7 +118,8 @@ defmodule ArchivalTest do
   defmodule Comment do
     use Ash.Resource,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshArchival.Resource],
+      authorizers: [Ash.Policy.Authorizer]
 
     ets do
       table(:comments)
@@ -118,6 +137,14 @@ defmodule ArchivalTest do
     relationships do
       belongs_to :post, Post do
         attribute_writable?(true)
+      end
+    end
+
+    policies do
+      policy always() do
+        authorize_if(action_type(:create))
+        authorize_if(action_type(:read))
+        authorize_if(actor_attribute_equals(:admin, true))
       end
     end
   end
@@ -157,21 +184,25 @@ defmodule ArchivalTest do
   defmodule Api do
     use Ash.Api
 
+    authorization do
+      authorize(:by_default)
+    end
+
     resources do
       registry(Registry)
     end
   end
 
   test "destroying a record archives it" do
-    post =
-      Post
+    comment =
+      Comment
       |> Ash.Changeset.for_create(:create)
       |> Api.create!()
 
-    assert :ok = post |> Api.destroy!()
+    assert :ok = comment |> Api.destroy!(actor: %{admin: true})
 
-    [archived] = Api.read!(PostWithArchive)
-    assert archived.id == post.id
+    [archived] = Api.read!(CommentWithArchive)
+    assert archived.id == comment.id
     assert archived.archived_at
   end
 
@@ -186,7 +217,7 @@ defmodule ArchivalTest do
       |> Ash.Changeset.for_create(:create, %{post_id: post.id})
       |> Api.create!()
 
-    assert :ok = post |> Api.destroy!()
+    assert :ok = post |> Api.destroy!(actor: %{admin: true})
 
     [archived] = Api.read!(CommentWithArchive)
     assert archived.id == comment.id
