@@ -240,7 +240,7 @@ defmodule ArchivalWithPolicyTest do
       |> Ash.Changeset.for_create(:create, %{post_id: post.id})
       |> Api.create!()
 
-    assert :ok = author |> Api.destroy!()
+    assert :ok = author |> Api.destroy!(actor: %{admin: true})
 
     [archived_post] = Api.read!(PostWithArchive)
     assert archived_post.id == post.id
