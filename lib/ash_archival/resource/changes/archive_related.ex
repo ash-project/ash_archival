@@ -27,7 +27,10 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
             |> Enum.flat_map(fn related ->
               related
               |> Ash.Changeset.for_destroy(destroy_action, opts)
-              |> (relationship.api || changeset.api).destroy!(opts |> Keyword.merge(return_notifications?: true))
+              |> (relationship.api || changeset.api).destroy!(
+                opts
+                |> Keyword.merge(return_notifications?: true)
+              )
             end)
           end)
 
