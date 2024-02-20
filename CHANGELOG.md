@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.1.5](https://github.com/ash-project/ash_archival/compare/v0.1.4...v0.1.5) (2024-02-20)
+
+
+
+
+### Bug Fixes:
+
+* properly pass actor into archive_related
+
+* policy error on cascade archive
+
 ## [v0.1.4](https://github.com/ash-project/ash_archival/compare/v0.1.3...v0.1.4) (2023-05-04)
 
 
