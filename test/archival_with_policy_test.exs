@@ -185,7 +185,7 @@ defmodule ArchivalWithPolicyTest do
     use Ash.Api
 
     authorization do
-      authorize(:by_default)
+      authorize(:always)
     end
 
     resources do
