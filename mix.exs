@@ -42,7 +42,7 @@ defmodule AshArchival.MixProject do
       extras: [
         "documentation/topics/archival.md",
         "documentation/topics/unarchiving.md",
-        "documentation/dsls/DSL:-AshArchival.Resource.cheatmd"
+        "documentation/dsls/DSL:-AshArchival.Resource.md"
       ],
       groups_for_extras: [
         Tutorials: ~r'documentation/tutorials',
@@ -105,7 +105,7 @@ defmodule AshArchival.MixProject do
       docs: [
         "spark.cheat_sheets",
         "docs",
-        "ash.replace_doc_links",
+        "spark.replace_doc_links",
         "spark.cheat_sheets_in_search"
       ],
       credo: "credo --strict",

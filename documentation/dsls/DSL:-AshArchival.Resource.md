@@ -50,42 +50,14 @@ A section for configuring how archival is configured for a resource.
 
 ### Options
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Default</th>
-      <th colspan=2>Docs</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-  <td style="text-align: left">
-    <a id="archive-archive_related" href="#archive-archive_related">
-      <span style="font-family: Inconsolata, Menlo, Courier, monospace;">
-        archive_related
-      </span>
-    </a>
-      
-  </td>
-  <td style="text-align: left">
-    <code class="inline">list(atom)</code>
-  </td>
-  <td style="text-align: left">
-    
-  </td>
-  <td style="text-align: left" colspan=2>
-    A list of relationships that should have all related items archived when this is archived. Note: this is currently not optimized. It simply reads the relationship and archives each one.
-
-  </td>
-</tr>
-
-  </tbody>
-</table>
+| Name | Type | Default | Docs |
+|------|------|---------|------|
+| [`archive_related`](#archive-archive_related){: #archive-archive_related } | `list(atom)` |  | A list of relationships that should have all related items archived when this is archived. Note: this is currently not optimized. It simply reads the relationship and archives each one. |
 
 
 
 
 
 
+
+<style type="text/css">.spark-required::after { content: "*"; color: red !important; }</style>
