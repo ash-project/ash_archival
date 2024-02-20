@@ -12,6 +12,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
       Ash.Changeset.after_action(changeset, fn changeset, result ->
         # This is not optimized. We should do this with bulk queries, not resource actions.
         opts = context |> Ash.context_to_opts()
+        {changeset.resource, context} |> IO.inspect()
         loaded = changeset.api.load!(result, archive_related, opts)
 
         notifications =
