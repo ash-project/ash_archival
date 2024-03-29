@@ -11,8 +11,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
     else
       Ash.Changeset.after_action(changeset, fn changeset, result ->
         # This is not optimized. We should do this with bulk queries, not resource actions.
-        opts = context |> Ash.context_to_opts()
-        loaded = changeset.api.load!(result, archive_related, opts)
+        opts = context |> Ash.Context.to_opts(domain: changeset.domain)
+        loaded = Ash.load!(result, archive_related, opts)
 
         notifications =
           Enum.flat_map(archive_related, fn relationship ->
@@ -21,13 +21,16 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
             destroy_action =
               Ash.Resource.Info.primary_action!(relationship.destination, :destroy).name
 
+            opts =
+              Keyword.put(opts, :domain, Ash.Domain.Info.related_domain(changeset, relationship))
+
             loaded
             |> Map.get(relationship.name)
             |> List.wrap()
             |> Enum.flat_map(fn related ->
               related
               |> Ash.Changeset.for_destroy(destroy_action, %{}, opts)
-              |> (relationship.api || changeset.api).destroy!(
+              |> Ash.destroy!(
                 opts
                 |> Keyword.merge(return_notifications?: true)
               )

@@ -3,6 +3,7 @@ defmodule ArchivalTest do
 
   defmodule Author do
     use Ash.Resource,
+      domain: ArchivalTest.Domain,
       data_layer: Ash.DataLayer.Ets,
       extensions: [AshArchival.Resource]
 
@@ -16,6 +17,7 @@ defmodule ArchivalTest do
     end
 
     actions do
+      default_accept(:*)
       defaults([:create, :read, :update, :destroy])
     end
 
@@ -24,12 +26,15 @@ defmodule ArchivalTest do
     end
 
     relationships do
-      has_many(:posts, ArchivalTest.Post)
+      has_many(:posts, ArchivalTest.Post) do
+        public?(true)
+      end
     end
   end
 
   defmodule AuthorWithArchive do
     use Ash.Resource,
+      domain: ArchivalTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -38,17 +43,19 @@ defmodule ArchivalTest do
     end
 
     actions do
+      default_accept(:*)
       defaults([:create, :read, :update, :destroy])
     end
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec)
+      attribute(:archived_at, :utc_datetime_usec, public?: true)
     end
   end
 
   defmodule Post do
     use Ash.Resource,
+      domain: ArchivalTest.Domain,
       data_layer: Ash.DataLayer.Ets,
       extensions: [AshArchival.Resource]
 
@@ -62,6 +69,7 @@ defmodule ArchivalTest do
     end
 
     actions do
+      default_accept(:*)
       defaults([:create, :read, :update, :destroy])
     end
 
@@ -71,15 +79,19 @@ defmodule ArchivalTest do
 
     relationships do
       belongs_to :author, Author do
+        public?(true)
         attribute_writable?(true)
       end
 
-      has_many(:comments, ArchivalTest.Comment)
+      has_many(:comments, ArchivalTest.Comment) do
+        public?(true)
+      end
     end
   end
 
   defmodule PostWithArchive do
     use Ash.Resource,
+      domain: ArchivalTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -88,17 +100,19 @@ defmodule ArchivalTest do
     end
 
     actions do
+      default_accept(:*)
       defaults([:create, :read, :update, :destroy])
     end
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec)
+      attribute(:archived_at, :utc_datetime_usec, public?: true)
     end
   end
 
   defmodule Comment do
     use Ash.Resource,
+      domain: ArchivalTest.Domain,
       data_layer: Ash.DataLayer.Ets,
       extensions: [AshArchival.Resource]
 
@@ -108,6 +122,7 @@ defmodule ArchivalTest do
     end
 
     actions do
+      default_accept(:*)
       defaults([:create, :read, :update, :destroy])
     end
 
@@ -117,6 +132,7 @@ defmodule ArchivalTest do
 
     relationships do
       belongs_to :post, Post do
+        public?(true)
         attribute_writable?(true)
       end
     end
@@ -124,6 +140,7 @@ defmodule ArchivalTest do
 
   defmodule CommentWithArchive do
     use Ash.Resource,
+      domain: ArchivalTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -132,33 +149,26 @@ defmodule ArchivalTest do
     end
 
     actions do
+      default_accept(:*)
       defaults([:create, :read, :update, :destroy])
     end
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec)
+      attribute(:archived_at, :utc_datetime_usec, public?: true)
     end
   end
 
-  defmodule Registry do
-    use Ash.Registry
-
-    entries do
-      entry(Author)
-      entry(AuthorWithArchive)
-      entry(Post)
-      entry(PostWithArchive)
-      entry(Comment)
-      entry(CommentWithArchive)
-    end
-  end
-
-  defmodule Api do
-    use Ash.Api
+  defmodule Domain do
+    use Ash.Domain
 
     resources do
-      registry(Registry)
+      resource(Author)
+      resource(AuthorWithArchive)
+      resource(Post)
+      resource(PostWithArchive)
+      resource(Comment)
+      resource(CommentWithArchive)
     end
   end
 
@@ -166,11 +176,11 @@ defmodule ArchivalTest do
     post =
       Post
       |> Ash.Changeset.for_create(:create)
-      |> Api.create!()
+      |> Ash.create!()
 
-    assert :ok = post |> Api.destroy!()
+    assert :ok = post |> Ash.destroy!()
 
-    [archived] = Api.read!(PostWithArchive)
+    [archived] = Ash.read!(PostWithArchive)
     assert archived.id == post.id
     assert archived.archived_at
   end
@@ -179,16 +189,16 @@ defmodule ArchivalTest do
     post =
       Post
       |> Ash.Changeset.for_create(:create)
-      |> Api.create!()
+      |> Ash.create!()
 
     comment =
       Comment
       |> Ash.Changeset.for_create(:create, %{post_id: post.id})
-      |> Api.create!()
+      |> Ash.create!()
 
-    assert :ok = post |> Api.destroy!()
+    assert :ok = post |> Ash.destroy!()
 
-    [archived] = Api.read!(CommentWithArchive)
+    [archived] = Ash.read!(CommentWithArchive)
     assert archived.id == comment.id
     assert archived.archived_at
   end
@@ -197,25 +207,25 @@ defmodule ArchivalTest do
     author =
       Author
       |> Ash.Changeset.for_create(:create)
-      |> Api.create!()
+      |> Ash.create!()
 
     post =
       Post
       |> Ash.Changeset.for_create(:create, %{author_id: author.id})
-      |> Api.create!()
+      |> Ash.create!()
 
     comment =
       Comment
       |> Ash.Changeset.for_create(:create, %{post_id: post.id})
-      |> Api.create!()
+      |> Ash.create!()
 
-    assert :ok = author |> Api.destroy!()
+    assert :ok = author |> Ash.destroy!()
 
-    [archived_post] = Api.read!(PostWithArchive)
+    [archived_post] = Ash.read!(PostWithArchive)
     assert archived_post.id == post.id
     assert archived_post.archived_at
 
-    [archived_comment] = Api.read!(CommentWithArchive)
+    [archived_comment] = Ash.read!(CommentWithArchive)
     assert archived_comment.id == comment.id
     assert archived_comment.archived_at
   end

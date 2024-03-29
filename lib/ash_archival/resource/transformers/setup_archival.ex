@@ -37,7 +37,7 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
            Transformer.build_entity(Ash.Resource.Dsl, [:attributes], :attribute,
              name: :archived_at,
              type: :utc_datetime_usec,
-             private?: true,
+             public?: false,
              allow_nil?: true
            ) do
       {:ok, Transformer.add_entity(dsl_state, [:attributes], archived_at)}
