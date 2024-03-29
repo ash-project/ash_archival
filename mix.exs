@@ -1,7 +1,7 @@
 defmodule AshArchival.MixProject do
   use Mix.Project
 
-  @version "0.1.5"
+  @version "0.1.6-rc.0"
   @description """
   A small resource extension that sets a resource up to archive instead of destroy.
   """
