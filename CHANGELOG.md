@@ -5,6 +5,21 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.0.0-rc.0](https://github.com/ash-project/ash_archival/compare/v0.1.6-rc.0...v1.0.0-rc.0) (2024-04-26)
+### Breaking Changes:
+
+* don't use `base_filter` anymore, allowing for more flexible design
+
+
+
+### Improvements:
+
+* rewrite to take advantage of new bulk actions
+
+* add `exclude_read_actions` to exclude some actions from filtering archived items
+
+* add `exclude_destroy_actions` to exclude some actions from being intercepted
+
 ## [v0.1.6-rc.0](https://github.com/ash-project/ash_archival/compare/v0.1.5...v0.1.6-rc.0) (2024-03-29)
 
 
