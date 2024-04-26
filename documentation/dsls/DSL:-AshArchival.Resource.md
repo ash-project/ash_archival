@@ -7,38 +7,6 @@ Configures a resource to be archived instead of destroyed for all destroy action
 
 For more information, see [Archival](/documentation/topics/archival.md)
 
-<!--- ash-hq-hide-start --> <!--- -->
-
-## DSL Documentation
-
-### Index
-
-  * archive
-
-### Docs
-
-## archive
-
-A section for configuring how archival is configured for a resource.
-
-
-
-
-
-
-
----
-
-* `:archive_related` (list of `t:atom/0`) - A list of relationships that should have all related items archived when this is archived. Note: this is currently not optimized. It simply reads the relationship and archives each one.
-
-
-
-
-
-
-
-<!--- ash-hq-hide-stop--> <!--- -->
-
 
 ## archive
 A section for configuring how archival is configured for a resource.
@@ -52,7 +20,10 @@ A section for configuring how archival is configured for a resource.
 
 | Name | Type | Default | Docs |
 |------|------|---------|------|
-| [`archive_related`](#archive-archive_related){: #archive-archive_related } | `list(atom)` |  | A list of relationships that should have all related items archived when this is archived. Note: this is currently not optimized. It simply reads the relationship and archives each one. |
+| [`attribute`](#archive-attribute){: #archive-attribute } | `atom` | `:archived_at` | The attribute in which to store the archival flag (the current datetime). |
+| [`exclude_read_actions`](#archive-exclude_read_actions){: #archive-exclude_read_actions } | `atom \| list(atom)` | `[]` | A read action or actions that should show archived items. They will not get the automatic `is_nil(archived_at)` filter. |
+| [`exclude_destroy_actions`](#archive-exclude_destroy_actions){: #archive-exclude_destroy_actions } | `atom \| list(atom)` | `[]` | A destroy action or actions that should *not* archive, but instead be left alone. This allows for having a destroy *or* archive pattern. |
+| [`archive_related`](#archive-archive_related){: #archive-archive_related } | `list(atom)` | `[]` | A list of relationships that should have all related items archived when this is archived. Notifications are not sent for this operation. |
 
 
 

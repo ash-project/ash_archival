@@ -86,7 +86,16 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
             |> Map.get(relationship.name)
             |> List.wrap()
           end)
-          |> Ash.bulk_destroy!(destroy_action, %{}, Keyword.update(opts, :context, %{ash_archival: true}, &Map.put(&1, :ash_archival, true)))
+          |> Ash.bulk_destroy!(
+            destroy_action,
+            %{},
+            Keyword.update(
+              opts,
+              :context,
+              %{ash_archival: true},
+              &Map.put(&1, :ash_archival, true)
+            )
+          )
       end
     end)
   end

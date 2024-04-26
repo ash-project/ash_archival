@@ -1,4 +1,9 @@
-spark_locals_without_parens = [archive_related: 1]
+spark_locals_without_parens = [
+  archive_related: 1,
+  attribute: 1,
+  exclude_destroy_actions: 1,
+  exclude_read_actions: 1
+]
 
 [
   inputs: ["{mix,.formatter}.exs", "{config,lib,test}/**/*.{ex,exs}"],

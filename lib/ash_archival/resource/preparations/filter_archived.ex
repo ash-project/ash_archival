@@ -1,4 +1,5 @@
 defmodule AshArchival.Resource.Preparations.FilterArchived do
+  @moduledoc false
   use Ash.Resource.Preparation
 
   def prepare(query, _, _) do
