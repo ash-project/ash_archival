@@ -5,10 +5,11 @@
 This extension modifies a resource in the following ways.
 
 1. Adds a private `archived_at` `utc_datetime_usec` attribute.
-2. Adds a base filter to the resource, for `is_nil(archived_at)`
-3. Marks all destroy actions as `soft?`, turning them into updates
+2. Adds a preparation that filters each action for `is_nil(archived_at)` (except for excluded actions)
+3. Marks all destroy actions as `soft?`, turning them into updates (except for excluded actions)
 4. Adds a change to all destroy actions that sets `archived_at` to the current timestamp
-5. Adds a change that will iteratively load and destroy anything configured in `d:AshArchival.Resource.archive|archive_related` 
+5. Adds a change that will iteratively load and destroy anything configured in `d:AshArchival.Resource.archive|archive_related`
+
 ## Considerations
 
 ### Performance of Archive Related
