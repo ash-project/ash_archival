@@ -21,8 +21,7 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
       dsl_state
       |> add_archived_at()
       |> update_destroy_actions()
-      |> add_base_filter()
-      |> add_base_filter_sql()
+      |> add_preparation()
     end
   end
 
@@ -33,9 +32,11 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
   def before?(_), do: false
 
   defp add_archived_at(dsl_state) do
+    attribute = AshArchival.Resource.Info.archive_attribute!(dsl_state)
+
     with {:ok, archived_at} <-
            Transformer.build_entity(Ash.Resource.Dsl, [:attributes], :attribute,
-             name: :archived_at,
+             name: attribute,
              type: :utc_datetime_usec,
              public?: false,
              allow_nil?: true
@@ -45,14 +46,18 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
   end
 
   defp update_destroy_actions({:ok, dsl_state}) do
+    attribute = AshArchival.Resource.Info.archive_attribute!(dsl_state)
+
+    exclude_destroy_actions =
+      AshArchival.Resource.Info.archive_exclude_destroy_actions!(dsl_state)
+
     dsl_state
     |> Transformer.get_entities([:actions])
-    |> Enum.filter(&(&1.type == :destroy))
+    |> Enum.filter(&(&1.type == :destroy && &1.name not in exclude_destroy_actions))
     |> Enum.reduce({:ok, dsl_state}, fn destroy_action, {:ok, dsl_state} ->
       with {:ok, set_archived_at} <-
              Transformer.build_entity(Ash.Resource.Dsl, [:actions, :destroy], :change,
-               change:
-                 Ash.Resource.Change.Builtins.set_attribute(:archived_at, &DateTime.utc_now/0)
+               change: Ash.Resource.Change.Builtins.set_attribute(attribute, &DateTime.utc_now/0)
              ),
            {:ok, archive_related} <-
              Transformer.build_entity(Ash.Resource.Dsl, [:actions, :destroy], :change,
@@ -77,41 +82,10 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
 
   defp update_destroy_actions({:error, error}), do: {:error, error}
 
-  defp add_base_filter({:ok, dsl_state}) do
-    case Transformer.get_option(dsl_state, [:resource], :base_filter) do
-      nil ->
-        {:ok, Transformer.set_option(dsl_state, [:resource], :base_filter, is_nil: :archived_at)}
-
-      value ->
-        {:ok,
-         Transformer.set_option(dsl_state, [:resource], :base_filter,
-           and: [[is_nil: :archived_at], value]
-         )}
-    end
-  end
-
-  defp add_base_filter({:error, error}) do
-    {:error, error}
-  end
-
-  defp add_base_filter_sql({:ok, dsl_state}) do
-    case Transformer.get_option(dsl_state, [:postgres], :base_filter_sql) do
-      nil ->
-        {:ok,
-         Transformer.set_option(dsl_state, [:postgres], :base_filter_sql, "archived_at IS NULL")}
-
-      value ->
-        {:ok,
-         Transformer.set_option(
-           dsl_state,
-           [:postgres],
-           :base_filter_sql,
-           "archived_at IS NULL and (#{value})"
-         )}
-    end
-  end
-
-  defp add_base_filter_sql({:error, error}) do
-    {:error, error}
+  defp add_preparation({:ok, dsl_state}) do
+    Ash.Resource.Builder.add_preparation(
+      dsl_state,
+      {AshArchival.Resource.Preparations.FilterArchived, []}
+    )
   end
 end

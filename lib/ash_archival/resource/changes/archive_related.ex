@@ -4,41 +4,128 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   require Ash.Query
 
   def change(changeset, _, context) do
-    archive_related = AshArchival.Resource.Info.archive_related(changeset.resource)
+    Ash.Changeset.after_action(changeset, fn changeset, result ->
+      archive_related([result], changeset.resource, changeset.domain, context)
+      {:ok, result}
+    end)
+  end
 
-    if Enum.empty?(archive_related) do
-      changeset
-    else
-      Ash.Changeset.after_action(changeset, fn changeset, result ->
-        # This is not optimized. We should do this with bulk queries, not resource actions.
-        opts = context |> Ash.Context.to_opts(domain: changeset.domain)
-        loaded = Ash.load!(result, archive_related, opts)
+  def atomic(_changeset, _, _) do
+    :ok
+  end
 
-        notifications =
-          Enum.flat_map(archive_related, fn relationship ->
-            relationship = Ash.Resource.Info.relationship(changeset.resource, relationship)
+  def after_atomic(changeset, _, record, context) do
+    archive_related([record], changeset.resource, changeset.domain, context)
 
-            destroy_action =
-              Ash.Resource.Info.primary_action!(relationship.destination, :destroy).name
+    :ok
+  end
 
-            opts =
-              Keyword.put(opts, :domain, Ash.Domain.Info.related_domain(changeset, relationship))
+  def after_batch([{first_changeset, _} | _] = changesets_and_results, _opts, context) do
+    records =
+      Enum.map(changesets_and_results, &elem(&1, 1))
 
-            loaded
+    archive_related(records, first_changeset.resource, first_changeset.domain, context)
+
+    Enum.map(records, fn result ->
+      {:ok, result}
+    end)
+  end
+
+  def batch_callbacks?([], _, _), do: false
+
+  def batch_callbacks?([%{resource: resource} | _], _, _) do
+    resource
+    |> AshArchival.Resource.Info.archive_archive_related!()
+    |> Enum.any?()
+  end
+
+  def batch_callbacks?(%{resource: resource}, _, _) do
+    resource
+    |> AshArchival.Resource.Info.archive_archive_related!()
+    |> Enum.any?()
+  end
+
+  defp archive_related([], _, _, _) do
+    :ok
+  end
+
+  defp archive_related(data, resource, domain, context) do
+    opts =
+      context
+      |> Ash.Context.to_opts(
+        domain: domain,
+        return_errors?: true,
+        strategy: [:stream, :atomic, :atomic_batches]
+      )
+
+    archive_related =
+      AshArchival.Resource.Info.archive_archive_related!(resource)
+
+    Enum.each(archive_related, fn relationship ->
+      relationship = Ash.Resource.Info.relationship(resource, relationship)
+
+      destroy_action =
+        Ash.Resource.Info.primary_action!(relationship.destination, :destroy).name
+
+      case related_query(data, relationship) do
+        {:ok, query} ->
+          Ash.bulk_destroy!(query, destroy_action, %{}, opts)
+
+        :error ->
+          data
+          |> List.wrap()
+          |> Ash.load!(
+            [
+              {relationship.name,
+               Ash.Query.set_context(relationship.destination, %{ash_archival: true})}
+            ],
+            authorize?: false
+          )
+          |> Enum.flat_map(fn record ->
+            record
             |> Map.get(relationship.name)
             |> List.wrap()
-            |> Enum.flat_map(fn related ->
-              related
-              |> Ash.Changeset.for_destroy(destroy_action, %{}, opts)
-              |> Ash.destroy!(
-                opts
-                |> Keyword.merge(return_notifications?: true)
-              )
-            end)
           end)
+          |> Ash.bulk_destroy!(destroy_action, %{}, Keyword.update(opts, :context, %{ash_archival: true}, &Map.put(&1, :ash_archival, true)))
+      end
+    end)
+  end
 
-        {:ok, result, notifications}
-      end)
+  # An advanced optimization to be made here is to use lateral join context,
+  # allowing us not to fetch this relationship in the case that data layers
+  # support lateral joining. Not sure if this would "just work" to be paired
+  # with `update_query` or if we would need a separate callback.
+  defp related_query(_records, %{type: :many_to_many}) do
+    :error
+  end
+
+  defp related_query(records, relationship) do
+    if Ash.Actions.Read.Relationships.has_parent_expr?(relationship) do
+      :error
+    else
+      {:ok,
+       Ash.Actions.Read.Relationships.related_query(
+         relationship.name,
+         records,
+         Ash.Query.new(relationship.destination),
+         Ash.Query.new(relationship.source)
+       )
+       |> elem(1)
+       |> filter_by_keys(relationship, records)}
     end
+  end
+
+  defp filter_by_keys(query, %{no_attributes?: true}, _records) do
+    query
+  end
+
+  defp filter_by_keys(
+         query,
+         %{source_attribute: source_attribute, destination_attribute: destination_attribute},
+         records
+       ) do
+    source_values = Enum.map(records, &Map.get(&1, source_attribute))
+
+    Ash.Query.filter(query, ^ref(destination_attribute) in ^source_values)
   end
 end
