@@ -87,7 +87,7 @@ defmodule AshArchival.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ash, ash_version("~> 3.0.0-rc.0")},
+      {:ash, ash_version("~> 3.0.0-rc and >= 3.0.0-rc.31")},
       # dev/test dependencies
       {:simple_sat, "~> 0.1.0", only: [:dev, :test]},
       {:git_ops, "~> 2.5", only: [:dev, :test]},
