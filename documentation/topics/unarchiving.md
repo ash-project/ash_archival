@@ -1,42 +1,39 @@
 # Un-archiving
 
-At the moment, there is no way to unarchive an entry with a simple action on that resource. However, if you define a simple resource that uses the same storage under the hood (e.g same database table), but does _not_ use the archival extension. You could then fabricate unarchival with something like this (this is not vetted, it is a pseudo-code example):
+Un-archiving can be accomplished by creating a read action that is skipped, using `exclude_read_actions`. Then, you can create an update action that sets that attribute to `nil`. For example:
 
 ```elixir
-# on the archived resource
-# we model it as a create because there is no input record
-create :unarchive do
-  manual? true
-  argument :id, :uuid do
-    allow_nil? false
+archive do
+  ...
+  exclude_read_actions :archived
+end
+
+actions do
+  read :archived do
+    filter expr(not is_nil(archived_at))
   end
 
-  change Unarchive
+  update :unarchive do
+    update set_attribute(:archived_at, nil)
+  end
 end
 ```
 
-with an `Unarchive` change like this
+You could then do something like this:
 
 ```elixir
-def change(changeset, _, _) do
-  # no data yet, so match on result being `nil`
-  Ash.Changeset.after_action(changeset, fn changeset, nil ->
-    id = Ash.Changeset.get_argument(changeset, :id)
+Resource
+|> Ash.get!(id, action: :archived)
+|> Ash.Changeset.for_update(:unarchive, %{)
+|> Ash.update!()
+```
 
-    ResourceWithoutArchival
-    |> Ash.Query.filter(id == ^id)
-    |> Ash.read_one()
-    |> case do
-      {:ok, nil} ->
-        # not found error
-      {:ok, found} ->
-        # unarchive
-        found
-        |> Ash.Changeset.for_update(:update, %{archived_at: nil})
-        |> Ash.update!()
+More idiomatically, you would define a code interfaceon the domain, and call that:
 
-      {:ok, Ash.get!(changeset.resource, id)}
-    end
-  end)
-end
+```elixir
+# to unarchive by `id`
+Resource
+|> Ash.Query.for_read(:archived, %{})
+|> Ash.Query.filter(id == ^id)
+|> Domain.unarchive!()
 ```

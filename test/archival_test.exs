@@ -66,15 +66,23 @@ defmodule ArchivalTest do
 
     archive do
       archive_related([:comments])
+      exclude_read_actions :all_posts
     end
 
     actions do
       default_accept(:*)
       defaults([:create, :read, :update, :destroy])
+
+      read(:all_posts)
     end
 
     attributes do
       uuid_primary_key(:id)
+      attribute(:name, :string, public?: true)
+    end
+
+    identities do
+      identity(:unique_name, [:name], pre_check?: true)
     end
 
     relationships do
@@ -183,6 +191,27 @@ defmodule ArchivalTest do
     [archived] = Ash.read!(PostWithArchive)
     assert archived.id == post.id
     assert archived.archived_at
+  end
+
+  test "upserts don't consider archived records" do
+    post =
+      Post
+      |> Ash.Changeset.for_create(:create, %{name: "fred"})
+      |> Ash.create!()
+
+    assert :ok = post |> Ash.destroy!()
+
+    Post
+    |> Ash.Changeset.for_create(:create, %{name: "fred"},
+      upsert?: true,
+      upsert_identity: :unique_name
+    )
+    |> Ash.create!()
+
+    assert [_, _] =
+             Post
+             |> Ash.Query.for_read(:all_posts)
+             |> Ash.read!()
   end
 
   test "destroying a record archives any `archive_related` it has configured" do

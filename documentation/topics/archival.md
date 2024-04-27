@@ -10,11 +10,35 @@ This extension modifies a resource in the following ways.
 4. Adds a change to all destroy actions that sets `archived_at` to the current timestamp
 5. Adds a change that will iteratively load and destroy anything configured in `d:AshArchival.Resource.archive|archive_related`
 
-## Considerations
+## Upgrading from < 1.0
 
-### Performance of Archive Related
+Before 1.0 of this library, a `base_filter` was added to the resource to hide archived items. To retain the old behavior (which includes database structure),
+add the `base_filter` and `base_filter_sql` yourself.
 
-`d:AshArchival.Resource.archive|archive_related` is a simple iterative process. It is performed synchronously, and therefore is not suited for large cardinality relationships. Eventually, when bulk actions are supported, this can be migrated to use that. If you need to archive a very large amount of related things, you will need to write a custom change to handle this.
+## Base Filter
+
+Using a `base_filter` for your `archived_at` field has a lot of benefits if you are using `ash_postgres`, but comes with one major drawback, which is that it is not possible to exclude certain read actions from archival. If you wish to use a base filter, you will need to create a separate resource to read from the archived items. We may introduce a way to bypass the base filter at some point in the future.
+
+To add a `base_filter` and `base_filter_sql` to your resource:
+
+```elixir
+resource do
+  base_filter expr(is_nil(archived_at))
+end
+
+postgres do
+  ...
+  base_filter_sql "(archived_at IS NULL)"
+end
+```
+
+### Benefits of base_filter
+
+1. unique indexes will exclude archived items
+2. custom indexes will exclude archived items
+3. check constraints will not be applied to archived items
+
+If you want these benefits, add the appropriate `base_filter`.
 
 ## More
 
