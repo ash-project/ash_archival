@@ -8,6 +8,11 @@ defmodule AshArchival.Resource do
         default: :archived_at,
         doc: "The attribute in which to store the archival flag (the current datetime)."
       ],
+      base_filter?: [
+        type: :atom,
+        default: false,
+        doc: "Whether or not a base filter exists that applies the `is_nil(archived_at)` rule."
+      ],
       exclude_read_actions: [
         type: {:wrap_list, :atom},
         default: [],
@@ -35,7 +40,7 @@ defmodule AshArchival.Resource do
   @moduledoc """
   Configures a resource to be archived instead of destroyed for all destroy actions.
 
-  For more information, see [Archival](/documentation/topics/archival.md)
+  For more information, see [the getting started guide](/documentation/tutorials/get-started-with-ash-archival.md)
   """
 
   use Spark.Dsl.Extension,

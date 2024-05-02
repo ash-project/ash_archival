@@ -3,6 +3,7 @@ import Config
 if Mix.env() == :test do
   config :ash, :validate_domain_resource_inclusion?, false
   config :ash, :validate_domain_config_inclusion?, false
+  config :logger, level: :warning
 end
 
 if Mix.env() == :dev do
@@ -15,6 +16,6 @@ if Mix.env() == :dev do
     manage_mix_version?: true,
     # Instructs the tool to manage the version in your README.md
     # Pass in `true` to use `"README.md"` or a string to customize
-    manage_readme_version: "README.md",
+    manage_readme_version: ["README.md", "documentation/topics/get-started-with-ash-archival.md"],
     version_tag_prefix: "v"
 end

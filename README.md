@@ -1,24 +1,24 @@
-# Ash Archival
+![Logo](https://github.com/ash-project/ash/blob/main/logos/cropped-for-header-black-text.png?raw=true#gh-light-mode-only)
+![Logo](https://github.com/ash-project/ash/blob/main/logos/cropped-for-header-white-text.png?raw=true#gh-dark-mode-only)
 
-A small but useful resource extension for [Ash Framework](https://github.com/ash-project/ash), which configures resources to be archived instead of destroyed.
+![Elixir CI](https://github.com/ash-project/ash_archival/workflows/CI/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Hex version badge](https://img.shields.io/hexpm/v/ash_archival.svg)](https://hex.pm/packages/ash_archival)
+[![Hexdocs badge](https://img.shields.io/badge/docs-hexdocs-purple)](https://hexdocs.pm/ash_archival)
 
-## Installation
+# AshArchival
 
-The package can be installed by adding `ash_archival` to your list of dependencies in `mix.exs`:
+AshArchival is an [Ash](https://hexdocs.pm/ash) extension that provides a push-button solution for soft deleting records, instead of destroying them.
 
-```elixir
-def deps do
-  [
-    {:ash_archival, "~> 0.1"}
-  ]
-end
-```
+## Tutorials
 
-## Using the archive extension
+- [Get Started with AshArchival](documentation/tutorials/get-started-with-ash-archival.md)
 
-On your ash resource add `AshArchival.Resource` to your extensions. For more details see the docs at https://ash-hq.org.
+## Topics
 
-```elixir
-  use Ash.Resource,
-    extensions: [AshArchival.Resource]
-```
+- [How does AshArchival work?](documentation/topics/how-does-ash-archival-work.md)
+- [Unarchiving](documentation/topics/unarchiving.md)
+
+## Reference
+
+- [AshArchival DSL](documentation/dsls/DSL:-AshArchival.Resource.md)

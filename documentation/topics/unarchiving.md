@@ -1,5 +1,7 @@
 # Un-archiving
 
+If you want to unarchive a resource that uses a base filter, you will need to define a separate resource that uses the same storage and has no base filter. The rest of this guide applies for folks who _aren't_ using a `base_filter`.
+
 Un-archiving can be accomplished by creating a read action that is skipped, using `exclude_read_actions`. Then, you can create an update action that sets that attribute to `nil`. For example:
 
 ```elixir

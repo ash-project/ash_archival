@@ -3,7 +3,7 @@ defmodule AshArchival.MixProject do
 
   @version "1.0.0-rc.1"
   @description """
-  A small resource extension that sets a resource up to archive instead of destroy.
+  An Ash extension to implement archival (soft deletion) for resources.
   """
 
   def project do
@@ -37,11 +37,13 @@ defmodule AshArchival.MixProject do
 
   defp docs do
     [
-      main: "archival",
+      main: "readme",
       source_ref: "v#{@version}",
       extras: [
-        "documentation/topics/archival.md",
+        {"README.md", title: "Home"},
+        "documentation/tutorials/get-started-with-ash-archival.md",
         "documentation/topics/unarchiving.md",
+        "documentation/topics/how-does-ash-archival-work.md",
         "documentation/dsls/DSL:-AshArchival.Resource.md"
       ],
       groups_for_extras: [

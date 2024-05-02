@@ -193,6 +193,17 @@ defmodule ArchivalTest do
     assert archived.archived_at
   end
 
+  test "archived records are hidden" do
+    post =
+      Post
+      |> Ash.Changeset.for_create(:create)
+      |> Ash.create!()
+
+    assert :ok = post |> Ash.destroy!()
+
+    assert [] = Ash.read!(Post)
+  end
+
   test "upserts don't consider archived records" do
     post =
       Post
