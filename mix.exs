@@ -44,7 +44,8 @@ defmodule AshArchival.MixProject do
         "documentation/tutorials/get-started-with-ash-archival.md",
         "documentation/topics/unarchiving.md",
         "documentation/topics/how-does-ash-archival-work.md",
-        "documentation/dsls/DSL:-AshArchival.Resource.md"
+        "documentation/dsls/DSL:-AshArchival.Resource.md",
+        "CHANGELOG.md"
       ],
       groups_for_extras: [
         Tutorials: ~r'documentation/tutorials',

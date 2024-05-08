@@ -5,118 +5,20 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
-## [v1.0.0-rc.1](https://github.com/ash-project/ash_archival/compare/v1.0.0-rc.0...v1.0.0-rc.1) (2024-04-27)
+## [v1.0.0](https://github.com/ash-project/ash_archival/compare/v1.0.0-rc.0...v0.1.5)
 
+The changelog is being restarted. See `/documentation/0.x-CHANGELOG.md` in GitHub for previous changelogs.
 
-
-
-### Improvements:
-
-* support upserts
-
-## [v1.0.0-rc.0](https://github.com/ash-project/ash_archival/compare/v0.1.6-rc.0...v1.0.0-rc.0) (2024-04-26)
 ### Breaking Changes:
 
-* don't use `base_filter` anymore, allowing for more flexible design
-
-
+- [AshArchival] don't use `base_filter` anymore, allowing for more flexible design
 
 ### Improvements:
 
-* rewrite to take advantage of new bulk actions
-
-* add `exclude_read_actions` to exclude some actions from filtering archived items
-
-* add `exclude_destroy_actions` to exclude some actions from being intercepted
-
-## [v0.1.6-rc.0](https://github.com/ash-project/ash_archival/compare/v0.1.5...v0.1.6-rc.0) (2024-03-29)
-
-
-
+- [AshArchival] support filters on upsert actions
 
 ### Improvements:
 
-* upgrade to 3.0
-
-## [v0.1.5](https://github.com/ash-project/ash_archival/compare/v0.1.4...v0.1.5) (2024-02-20)
-
-
-
-
-### Bug Fixes:
-
-* properly pass actor into archive_related
-
-* policy error on cascade archive
-
-## [v0.1.4](https://github.com/ash-project/ash_archival/compare/v0.1.3...v0.1.4) (2023-05-04)
-
-
-
-
-## [v0.1.3](https://github.com/ash-project/ash_archival/compare/v0.1.2...v0.1.3) (2023-01-17)
-
-
-
-
-### Improvements:
-
-* update to new docs style
-
-* use new docs
-
-## [v0.1.2](https://github.com/ash-project/ash_archival/compare/v0.1.1-rc.3...v0.1.2) (2022-10-17)
-
-
-
-
-### Improvements:
-
-* update to Ash 2.0
-
-## [v0.1.1-rc.3](https://github.com/ash-project/ash_archival/compare/v0.1.1-rc.2...v0.1.1-rc.3) (2022-08-24)
-
-
-
-
-### Bug Fixes:
-
-* fix doc index Info reference
-
-* remove super dumb typo
-
-## [v0.1.1-rc.2](https://github.com/ash-project/ash_archival/compare/v0.1.1-rc.1...v0.1.1-rc.2) (2022-08-24)
-
-
-
-
-### Improvements:
-
-* update to ash 2.0
-
-## [v0.1.1-rc.1](https://github.com/ash-project/ash_archival/compare/v0.1.1-rc.0...v0.1.1-rc.1) (2022-07-14)
-
-
-
-
-### Improvements:
-
-* update ash
-
-## [v0.1.1-rc.0](https://github.com/ash-project/ash_archival/compare/v0.1.0...v0.1.1-rc.0) (2022-07-13)
-
-
-
-
-### Bug Fixes:
-
-* setup rc release since it depends on an rc version of ash
-
-## [v0.1.0](https://github.com/ash-project/ash_archival/compare/v0.1.0...v0.1.0) (2022-07-13)
-
-
-
-
-### Improvements:
-
-* create archival extension
+- [AshArchival] rewritten to support atomics & bulk actions to take advantage of new bulk actions
+- [AshArchival] add `exclude_read_actions` to exclude some actions from filtering archived items
+- [AshArchival] add `exclude_destroy_actions` to exclude some actions from being intercepted
