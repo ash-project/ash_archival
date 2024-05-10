@@ -1,7 +1,7 @@
 defmodule AshArchival.MixProject do
   use Mix.Project
 
-  @version "1.0.0-rc.1"
+  @version "1.0.0"
   @description """
   An Ash extension to implement archival (soft deletion) for resources.
   """
@@ -90,7 +90,7 @@ defmodule AshArchival.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ash, ash_version("~> 3.0.0-rc and >= 3.0.0-rc.31")},
+      {:ash, ash_version("~> 3.0")},
       # dev/test dependencies
       {:simple_sat, "~> 0.1.0", only: [:dev, :test]},
       {:git_ops, "~> 2.5", only: [:dev, :test]},

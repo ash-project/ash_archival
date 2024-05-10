@@ -5,6 +5,33 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.0.0](https://github.com/ash-project/ash_archival/compare/v1.0.0...v1.0.0) (2024-05-10)
+
+
+
+
+### Improvements:
+
+* support `base_filter? true` option
+
+## [v1.0.0](https://github.com/ash-project/ash_archival/compare/v1.0.0...v1.0.0) (2024-05-10)
+
+
+
+
+### Improvements:
+
+* support `base_filter? true` option
+
+## [v1.0.0](https://github.com/ash-project/ash_archival/compare/v1.0.0-rc.1...v1.0.0) (2024-05-10)
+
+
+
+
+### Improvements:
+
+* support `base_filter? true` option
+
 ## [v1.0.0](https://github.com/ash-project/ash_archival/compare/v1.0.0-rc.0...v0.1.5)
 
 The changelog is being restarted. See `/documentation/0.x-CHANGELOG.md` in GitHub for previous changelogs.
