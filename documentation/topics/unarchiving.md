@@ -26,7 +26,7 @@ You could then do something like this:
 ```elixir
 Resource
 |> Ash.get!(id, action: :archived)
-|> Ash.Changeset.for_update(:unarchive, %{)
+|> Ash.Changeset.for_update(:unarchive, %{})
 |> Ash.update!()
 ```
 
