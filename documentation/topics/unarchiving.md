@@ -16,7 +16,7 @@ actions do
   end
 
   update :unarchive do
-    update set_attribute(:archived_at, nil)
+    change set_attribute(:archived_at, nil)
   end
 end
 ```
