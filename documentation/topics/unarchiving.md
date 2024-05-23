@@ -17,6 +17,9 @@ actions do
 
   update :unarchive do
     change set_attribute(:archived_at, nil)
+    # if an individual record is used to unarchive
+    # it must use the `archived` read action for its atomic upgrade
+    atomic_upgrade_with :archived
   end
 end
 ```
