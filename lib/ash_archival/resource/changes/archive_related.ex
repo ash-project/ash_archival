@@ -69,7 +69,14 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
 
       case related_query(data, relationship) do
         {:ok, query} ->
-          Ash.bulk_destroy!(query, destroy_action, %{}, opts)
+          Ash.bulk_destroy!(query, destroy_action, %{},
+            Keyword.update(
+              opts,
+              :context,
+              %{ash_archival: true},
+              &Map.put(&1, :ash_archival, true)
+            )
+          )
 
         :error ->
           data
