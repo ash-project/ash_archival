@@ -126,6 +126,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
          Ash.Query.new(relationship.destination),
          Ash.Query.new(relationship.source)
        )
+       |> Ash.Query.set_context(%{ash_archival: true})
        |> elem(1)
        |> filter_by_keys(relationship, records)}
     end
