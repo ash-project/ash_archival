@@ -5,6 +5,21 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.0.1](https://github.com/ash-project/ash_archival/compare/v1.0.0...v1.0.1) (2024-06-23)
+
+
+
+
+### Bug Fixes:
+
+* set `ash_archival` on the bulk destroy read query
+
+* ensure `ash_archival: true` is set on all destroy invocations
+
+### Improvements:
+
+* update ash for `atomic_upgrade_with` feature
+
 ## [v1.0.0](https://github.com/ash-project/ash_archival/compare/v1.0.0...v1.0.0) (2024-05-10)
 
 
