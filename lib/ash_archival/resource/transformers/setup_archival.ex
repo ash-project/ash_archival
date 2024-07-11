@@ -35,15 +35,10 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
   defp add_archived_at(dsl_state) do
     attribute = AshArchival.Resource.Info.archive_attribute!(dsl_state)
 
-    with {:ok, archived_at} <-
-           Transformer.build_entity(Ash.Resource.Dsl, [:attributes], :attribute,
-             name: attribute,
-             type: :utc_datetime_usec,
-             public?: false,
-             allow_nil?: true
-           ) do
-      {:ok, Transformer.add_entity(dsl_state, [:attributes], archived_at)}
-    end
+    Ash.Resource.Builder.add_new_attribute(dsl_state, attribute, :utc_datetime_usec,
+      public?: false,
+      allow_nil?: true
+    )
   end
 
   defp update_destroy_actions({:ok, dsl_state}) do
