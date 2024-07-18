@@ -3,7 +3,8 @@ spark_locals_without_parens = [
   attribute: 1,
   base_filter?: 1,
   exclude_destroy_actions: 1,
-  exclude_read_actions: 1
+  exclude_read_actions: 1,
+  exclude_upsert_actions: 1
 ]
 
 [

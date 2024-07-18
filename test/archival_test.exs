@@ -67,11 +67,13 @@ defmodule ArchivalTest do
     archive do
       archive_related([:comments])
       exclude_read_actions :all_posts
+      exclude_upsert_actions :upsert
     end
 
     actions do
       default_accept(:*)
       defaults([:create, :read, :update, :destroy])
+      create(:upsert)
 
       read(:all_posts)
     end
@@ -220,6 +222,27 @@ defmodule ArchivalTest do
     |> Ash.create!()
 
     assert [_, _] =
+             Post
+             |> Ash.Query.for_read(:all_posts)
+             |> Ash.read!()
+  end
+
+  test "upserts do consider archived records if the create action is excluded" do
+    post =
+      Post
+      |> Ash.Changeset.for_create(:create, %{name: "fred"})
+      |> Ash.create!()
+
+    assert :ok = post |> Ash.destroy!()
+
+    Post
+    |> Ash.Changeset.for_create(:upsert, %{name: "fred"},
+      upsert?: true,
+      upsert_identity: :unique_name
+    )
+    |> Ash.create!()
+
+    assert [_] =
              Post
              |> Ash.Query.for_read(:all_posts)
              |> Ash.read!()

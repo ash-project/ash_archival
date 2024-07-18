@@ -20,6 +20,13 @@ defmodule AshArchival.Resource do
         A read action or actions that should show archived items. They will not get the automatic `is_nil(archived_at)` filter.
         """
       ],
+      exclude_upsert_actions: [
+        type: {:wrap_list, :atom},
+        default: [],
+        doc: """
+        A create action or actions that should not filter archived records out while upserting.
+        """
+      ],
       exclude_destroy_actions: [
         type: {:wrap_list, :atom},
         default: [],
