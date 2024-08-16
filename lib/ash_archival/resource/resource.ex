@@ -23,8 +23,10 @@ defmodule AshArchival.Resource do
       exclude_upsert_actions: [
         type: {:wrap_list, :atom},
         default: [],
+        deprecated:
+          "Upserts are handled according to the upsert identity. See the upserts guide for more.",
         doc: """
-        A create action or actions that should not filter archived records out while upserting.
+        This option is deprecated as it no longer has any effect. Upserts are handled according to the upsert identity. See the upserts guide for more.
         """
       ],
       exclude_destroy_actions: [

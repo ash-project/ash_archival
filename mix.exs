@@ -44,6 +44,7 @@ defmodule AshArchival.MixProject do
         "documentation/tutorials/get-started-with-ash-archival.md",
         "documentation/topics/unarchiving.md",
         "documentation/topics/how-does-ash-archival-work.md",
+        "documentation/topics/upserts-and-identities.md",
         "documentation/dsls/DSL:-AshArchival.Resource.md",
         "CHANGELOG.md"
       ],

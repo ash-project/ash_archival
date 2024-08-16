@@ -23,7 +23,7 @@ A section for configuring how archival is configured for a resource.
 | [`attribute`](#archive-attribute){: #archive-attribute } | `atom` | `:archived_at` | The attribute in which to store the archival flag (the current datetime). |
 | [`base_filter?`](#archive-base_filter?){: #archive-base_filter? } | `atom` | `false` | Whether or not a base filter exists that applies the `is_nil(archived_at)` rule. |
 | [`exclude_read_actions`](#archive-exclude_read_actions){: #archive-exclude_read_actions } | `atom \| list(atom)` | `[]` | A read action or actions that should show archived items. They will not get the automatic `is_nil(archived_at)` filter. |
-| [`exclude_upsert_actions`](#archive-exclude_upsert_actions){: #archive-exclude_upsert_actions } | `atom \| list(atom)` | `[]` | A create action or actions that should not filter archived records out while upserting. |
+| [`exclude_upsert_actions`](#archive-exclude_upsert_actions){: #archive-exclude_upsert_actions } | `atom \| list(atom)` | `[]` | This option is deprecated as it no longer has any effect. Upserts are handled according to the upsert identity. See the upserts guide for more. |
 | [`exclude_destroy_actions`](#archive-exclude_destroy_actions){: #archive-exclude_destroy_actions } | `atom \| list(atom)` | `[]` | A destroy action or actions that should *not* archive, but instead be left alone. This allows for having a destroy *or* archive pattern. |
 | [`archive_related`](#archive-archive_related){: #archive-archive_related } | `list(atom)` | `[]` | A list of relationships that should have all related items archived when this is archived. Notifications are not sent for this operation. |
 

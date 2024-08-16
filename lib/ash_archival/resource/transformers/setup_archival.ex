@@ -22,7 +22,6 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
       |> add_archived_at()
       |> update_destroy_actions()
       |> add_preparation()
-      |> add_change()
     end
   end
 
@@ -82,14 +81,6 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
     Ash.Resource.Builder.add_preparation(
       dsl_state,
       {AshArchival.Resource.Preparations.FilterArchived, []}
-    )
-  end
-
-  defp add_change({:ok, dsl_state}) do
-    Ash.Resource.Builder.add_change(
-      dsl_state,
-      {AshArchival.Resource.Changes.FilterArchivedForUpserts, []},
-      on: [:create]
     )
   end
 end

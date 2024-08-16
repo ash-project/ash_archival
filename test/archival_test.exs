@@ -67,7 +67,6 @@ defmodule ArchivalTest do
     archive do
       archive_related([:comments])
       exclude_read_actions :all_posts
-      exclude_upsert_actions :upsert
     end
 
     actions do
@@ -81,10 +80,12 @@ defmodule ArchivalTest do
     attributes do
       uuid_primary_key(:id)
       attribute(:name, :string, public?: true)
+      attribute(:title, :string, public?: true)
     end
 
     identities do
-      identity(:unique_name, [:name], pre_check?: true)
+      identity(:unique_name, [:name], pre_check?: true, where: expr(is_nil(archived_at)))
+      identity(:unique_title, [:title], pre_check?: true)
     end
 
     relationships do
@@ -206,7 +207,7 @@ defmodule ArchivalTest do
     assert [] = Ash.read!(Post)
   end
 
-  test "upserts don't consider archived records" do
+  test "upserts don't consider archived records if included in the identity" do
     post =
       Post
       |> Ash.Changeset.for_create(:create, %{name: "fred"})
@@ -227,18 +228,18 @@ defmodule ArchivalTest do
              |> Ash.read!()
   end
 
-  test "upserts do consider archived records if the create action is excluded" do
+  test "upserts do consider archived records if not included in the identity" do
     post =
       Post
-      |> Ash.Changeset.for_create(:create, %{name: "fred"})
+      |> Ash.Changeset.for_create(:create, %{title: "fred"})
       |> Ash.create!()
 
     assert :ok = post |> Ash.destroy!()
 
     Post
-    |> Ash.Changeset.for_create(:upsert, %{name: "fred"},
+    |> Ash.Changeset.for_create(:upsert, %{title: "fred"},
       upsert?: true,
-      upsert_identity: :unique_name
+      upsert_identity: :unique_title
     )
     |> Ash.create!()
 
