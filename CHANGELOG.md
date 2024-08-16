@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.0.3](https://github.com/ash-project/ash_archival/compare/v1.0.2...v1.0.3) (2024-08-16)
+
+
+
+
+### Improvements:
+
+* deprecate exclude_upsert_actions, as it had unintended side effects
+
+* add `exclude_upsert_actions` configuration
+
 ## [v1.0.2](https://github.com/ash-project/ash_archival/compare/v1.0.1...v1.0.2) (2024-07-11)
 
 
