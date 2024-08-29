@@ -33,8 +33,9 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
 
   defp add_archived_at(dsl_state) do
     attribute = AshArchival.Resource.Info.archive_attribute!(dsl_state)
+    attribute_type = AshArchival.Resource.Info.archive_attribute_type!(dsl_state)
 
-    Ash.Resource.Builder.add_new_attribute(dsl_state, attribute, :utc_datetime_usec,
+    Ash.Resource.Builder.add_new_attribute(dsl_state, attribute, attribute_type,
       public?: false,
       allow_nil?: true
     )

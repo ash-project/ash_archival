@@ -8,6 +8,11 @@ defmodule AshArchival.Resource do
         default: :archived_at,
         doc: "The attribute in which to store the archival flag (the current datetime)."
       ],
+      attribute_type: [
+        type: :atom,
+        default: :utc_datetime_usec,
+        doc: "The attribute type."
+      ],
       base_filter?: [
         type: :atom,
         default: false,
