@@ -293,4 +293,14 @@ defmodule ArchivalTest do
     assert archived_comment.id == comment.id
     assert archived_comment.archived_at
   end
+
+  test "destroyed records can be returned" do
+    author =
+      Author
+      |> Ash.Changeset.for_create(:create)
+      |> Ash.create!()
+
+    assert {:ok, %{archived_at: archived_at}} = Ash.destroy(author, return_destroyed?: true)
+    assert archived_at
+  end
 end
