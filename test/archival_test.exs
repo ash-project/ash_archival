@@ -75,6 +75,12 @@ defmodule ArchivalTest do
       create(:upsert)
 
       read(:all_posts)
+
+      update :unarchive do
+        accept([])
+        atomic_upgrade_with(:all_posts)
+        change(set_attribute(:archived_at, nil))
+      end
     end
 
     attributes do
@@ -97,6 +103,39 @@ defmodule ArchivalTest do
       has_many(:comments, ArchivalTest.Comment) do
         public?(true)
       end
+    end
+  end
+
+  defmodule UnarchivablePost do
+    use Ash.Resource,
+      domain: ArchivalTest.Domain,
+      data_layer: Ash.DataLayer.Ets,
+      extensions: [AshArchival.Resource]
+
+    ets do
+      table(:posts)
+      private?(true)
+    end
+
+    archive do
+      exclude_read_actions :all_posts
+    end
+
+    actions do
+      default_accept(:*)
+      defaults([:create, :read, :update, :destroy])
+
+      read(:all_posts)
+
+      update :unarchive do
+        accept([])
+        atomic_upgrade_with(:all_posts)
+        change(set_attribute(:archived_at, nil))
+      end
+    end
+
+    attributes do
+      uuid_primary_key(:id)
     end
   end
 
@@ -177,6 +216,7 @@ defmodule ArchivalTest do
       resource(Author)
       resource(AuthorWithArchive)
       resource(Post)
+      resource(UnarchivablePost)
       resource(PostWithArchive)
       resource(Comment)
       resource(CommentWithArchive)
@@ -205,6 +245,15 @@ defmodule ArchivalTest do
     assert :ok = post |> Ash.destroy!()
 
     assert [] = Ash.read!(Post)
+  end
+
+  test "archived records can be unarchived" do
+    assert %UnarchivablePost{} =
+             UnarchivablePost
+             |> Ash.Changeset.for_create(:create)
+             |> Ash.create!()
+             |> Ash.Changeset.for_update(:unarchive)
+             |> Ash.update!()
   end
 
   test "upserts don't consider archived records if included in the identity" do

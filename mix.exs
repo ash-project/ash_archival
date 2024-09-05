@@ -13,6 +13,7 @@ defmodule AshArchival.MixProject do
       elixir: "~> 1.13",
       source_url: "https://github.com/ash-project/ash_archival",
       homepage_url: "https://github.com/ash-project/ash_archival",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: @description,
       aliases: aliases(),
@@ -22,6 +23,9 @@ defmodule AshArchival.MixProject do
       consolidate_protocols: Mix.env() != :test
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp package do
     [
@@ -93,6 +97,7 @@ defmodule AshArchival.MixProject do
     [
       {:ash, ash_version("~> 3.0 and >= 3.0.5")},
       # dev/test dependencies
+      {:ash_postgres, "~> 2.3", only: [:dev, :test]},
       {:simple_sat, "~> 0.1.0", only: [:dev, :test]},
       {:git_ops, "~> 2.5", only: [:dev, :test]},
       {:ex_doc, github: "elixir-lang/ex_doc", only: [:dev, :test], runtime: false},
@@ -125,8 +130,8 @@ defmodule AshArchival.MixProject do
   defp ash_version(default_version) do
     case System.get_env("ASH_VERSION") do
       nil -> default_version
-      "local" -> [path: "../ash"]
-      "main" -> [git: "https://github.com/ash-project/ash.git"]
+      "local" -> [path: "../ash", override: true]
+      "main" -> [git: "https://github.com/ash-project/ash.git", override: true]
       version -> "~> #{version}"
     end
   end

@@ -1,9 +1,20 @@
 import Config
 
 if Mix.env() == :test do
+  config :ash_archival, ash_domains: [AshArchival.Test.Domain]
+
+  config :ash_archival,
+    ecto_repos: [AshArchival.TestRepo]
+
   config :ash, :validate_domain_resource_inclusion?, false
   config :ash, :validate_domain_config_inclusion?, false
   config :logger, level: :warning
+
+  config :ash_archival, AshArchival.TestRepo,
+    username: "postgres",
+    database: "ash_archival_test",
+    hostname: "localhost",
+    pool: Ecto.Adapters.SQL.Sandbox
 end
 
 if Mix.env() == :dev do

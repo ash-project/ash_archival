@@ -21,6 +21,7 @@ A section for configuring how archival is configured for a resource.
 | Name | Type | Default | Docs |
 |------|------|---------|------|
 | [`attribute`](#archive-attribute){: #archive-attribute } | `atom` | `:archived_at` | The attribute in which to store the archival flag (the current datetime). |
+| [`attribute_type`](#archive-attribute_type){: #archive-attribute_type } | `atom` | `:utc_datetime_usec` | The attribute type. |
 | [`base_filter?`](#archive-base_filter?){: #archive-base_filter? } | `atom` | `false` | Whether or not a base filter exists that applies the `is_nil(archived_at)` rule. |
 | [`exclude_read_actions`](#archive-exclude_read_actions){: #archive-exclude_read_actions } | `atom \| list(atom)` | `[]` | A read action or actions that should show archived items. They will not get the automatic `is_nil(archived_at)` filter. |
 | [`exclude_upsert_actions`](#archive-exclude_upsert_actions){: #archive-exclude_upsert_actions } | `atom \| list(atom)` | `[]` | This option is deprecated as it no longer has any effect. Upserts are handled according to the upsert identity. See the upserts guide for more. |
