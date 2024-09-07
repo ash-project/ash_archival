@@ -5,8 +5,6 @@ defmodule AshArchival.PostgresTest do
   require Ash.Query
 
   test "unarchival works" do
-    Logger.configure(level: :debug)
-
     assert %Post{} =
              Post
              |> Ash.Changeset.for_create(:create)
@@ -18,8 +16,6 @@ defmodule AshArchival.PostgresTest do
   end
 
   test "bulk unarchival works" do
-    Logger.configure(level: :debug)
-
     assert %Ash.BulkResult{records: [%Post{}]} =
              Post
              |> Ash.Changeset.for_create(:create)
