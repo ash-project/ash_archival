@@ -119,6 +119,8 @@ defmodule AshArchival.MixProject do
         "spark.replace_doc_links",
         "spark.cheat_sheets_in_search"
       ],
+      "test.create": "ash_postgres.create",
+      "test.migrate": "ash_postgres.migrate",
       credo: "credo --strict",
       "spark.formatter": "spark.formatter --extensions AshArchival.Resource",
       "spark.cheat_sheets": "spark.cheat_sheets --extensions AshArchival.Resource",
