@@ -11,6 +11,10 @@ defmodule AshArchival.TestRepo do
     ["ash-functions"]
   end
 
+  def all_tenants do
+    []
+  end
+
   def min_pg_version do
     case System.get_env("PG_VERSION") do
       nil -> %Version{major: 16, minor: 0, patch: 0}
