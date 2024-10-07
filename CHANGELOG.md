@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.0.4](https://github.com/ash-project/ash_archival/compare/v1.0.3...v1.0.4) (2024-10-07)
+
+
+
+
+### Improvements:
+
+* Add attribute_type to configure archived_at timestamp (#56)
+
 ## [v1.0.3](https://github.com/ash-project/ash_archival/compare/v1.0.2...v1.0.3) (2024-08-16)
 
 
