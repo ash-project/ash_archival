@@ -44,7 +44,7 @@ postgres do
 end
 ```
 
-Add `base_filter? true` to the `archive` configuration of your resource to tell it that it doesn't need to add the filter itself.
+Add `base_filter? true` to the `archive` configuration of your resource to tell it that it doesn't need to add an equivalent action filter itself.
 
 ### Benefits of base_filter
 
