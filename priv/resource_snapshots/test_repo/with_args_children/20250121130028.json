@@ -25,16 +25,6 @@
       "default": "nil",
       "generated?": false,
       "primary_key?": false,
-      "references": null,
-      "size": null,
-      "source": "archived_at",
-      "type": "utc_datetime_usec"
-    },
-    {
-      "allow_nil?": true,
-      "default": "nil",
-      "generated?": false,
-      "primary_key?": false,
       "references": {
         "deferrable": false,
         "destination_attribute": "id",
@@ -48,7 +38,7 @@
           "global": null,
           "strategy": null
         },
-        "name": "with_args_parents_parent_id_fkey",
+        "name": "with_args_children_parent_id_fkey",
         "on_delete": null,
         "on_update": null,
         "primary_key?": true,
@@ -58,6 +48,16 @@
       "size": null,
       "source": "parent_id",
       "type": "uuid"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": null,
+      "size": null,
+      "source": "archived_at",
+      "type": "utc_datetime_usec"
     }
   ],
   "base_filter": null,
@@ -65,7 +65,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "0BBBBD5986B09FEED6E467320D9B2A32E2F63FE1297E1E47F97155400F7B113D",
+  "hash": "00ABDD1E513897CE70121C43F7DD565B216E05F18C3C8325864604E5A71EBC94",
   "identities": [],
   "multitenancy": {
     "attribute": null,
@@ -74,5 +74,5 @@
   },
   "repo": "Elixir.AshArchival.TestRepo",
   "schema": null,
-  "table": "with_args_parents"
+  "table": "with_args_children"
 }

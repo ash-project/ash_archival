@@ -60,7 +60,7 @@ defmodule AshArchival.Test.WithArgsChild do
   end
 
   postgres do
-    table("with_args_parents")
+    table("with_args_children")
     repo(AshArchival.TestRepo)
   end
 

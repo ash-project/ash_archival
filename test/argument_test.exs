@@ -17,5 +17,19 @@ defmodule AshArchival.Test.ArgumentTest do
     parent
     |> Ash.Changeset.for_destroy(:archive, %{arg: "test"})
     |> Ash.destroy!()
+
+    parent =
+      WithArgsParent
+      |> Ash.Query.for_read(:read)
+      |> Ash.read_one!()
+
+    assert parent.arg1 == "test"
+
+    child =
+      WithArgsChild
+      |> Ash.Query.for_read(:read)
+      |> Ash.read_one!()
+
+    assert child.arg1 == "test"
   end
 end

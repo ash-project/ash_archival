@@ -1,4 +1,4 @@
-defmodule AshArchival.TestRepo.Migrations.AddNewTestResources do
+defmodule AshArchival.TestRepo.Migrations.AddArgTestResources do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -12,21 +12,30 @@ defmodule AshArchival.TestRepo.Migrations.AddNewTestResources do
       add(:id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true)
       add(:arg1, :text)
       add(:archived_at, :utc_datetime_usec)
+    end
+
+    create table(:with_args_children, primary_key: false) do
+      add(:id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true)
+      add(:arg1, :text)
 
       add(
         :parent_id,
         references(:with_args_parents,
           column: :id,
-          name: "with_args_parents_parent_id_fkey",
+          name: "with_args_children_parent_id_fkey",
           type: :uuid,
           prefix: "public"
         )
       )
+
+      add(:archived_at, :utc_datetime_usec)
     end
   end
 
   def down do
-    drop(constraint(:with_args_parents, "with_args_parents_parent_id_fkey"))
+    drop(constraint(:with_args_children, "with_args_children_parent_id_fkey"))
+
+    drop(table(:with_args_children))
 
     drop(table(:with_args_parents))
   end
