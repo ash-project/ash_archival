@@ -1,8 +1,8 @@
 defmodule AshArchival.Test.ArgumentTest do
   use AshArchival.RepoCase
 
-  alias AshArchival.Test.WithArgsParent
   alias AshArchival.Test.WithArgsChild
+  alias AshArchival.Test.WithArgsParent
 
   test "can pass arguments when archiving related resources" do
     parent =

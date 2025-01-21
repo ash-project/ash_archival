@@ -1,4 +1,7 @@
 defmodule CreateArgs do
+  @moduledoc """
+  The behaviour for specifiying arguments for related resources
+  """
   @behaviour AshArchival.ArchiveRelatedArguments
 
   @impl true
