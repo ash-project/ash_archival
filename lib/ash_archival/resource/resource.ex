@@ -47,6 +47,14 @@ defmodule AshArchival.Resource do
         doc: """
         A list of relationships that should have all related items archived when this is archived. Notifications are not sent for this operation.
         """
+      ],
+      archive_related_arguments: [
+        type:
+          {:spark_function_behaviour, AshArchival.ArchiveRelatedArguments,
+           {AshArchival.ArchiveRelatedArguments.Function, 2}},
+        doc: """
+        A function to allow passing along some of the arguments to related resources when archiving them.
+        """
       ]
     ]
   }

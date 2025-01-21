@@ -49,7 +49,7 @@ defmodule AshArchival.MixProject do
         "documentation/topics/unarchiving.md",
         "documentation/topics/how-does-ash-archival-work.md",
         "documentation/topics/upserts-and-identities.md",
-        "documentation/dsls/DSL:-AshArchival.Resource.md",
+        "documentation/dsls/DSL-AshArchival.Resource.md",
         "CHANGELOG.md"
       ],
       groups_for_extras: [
@@ -105,7 +105,8 @@ defmodule AshArchival.MixProject do
       {:credo, ">= 0.0.0", only: [:dev, :test], runtime: false},
       {:dialyxir, ">= 0.0.0", only: [:dev, :test], runtime: false},
       {:sobelow, ">= 0.0.0", only: [:dev, :test], runtime: false},
-      {:mix_audit, ">= 0.0.0", only: [:dev, :test], runtime: false}
+      {:mix_audit, ">= 0.0.0", only: [:dev, :test], runtime: false},
+      {:igniter, "~> 0.5", only: [:dev, :test]}
     ]
   end
 

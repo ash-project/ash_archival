@@ -12,6 +12,7 @@ if Mix.env() == :test do
 
   config :ash_archival, AshArchival.TestRepo,
     username: "postgres",
+    password: "postgres",
     database: "ash_archival_test",
     hostname: "localhost",
     pool: Ecto.Adapters.SQL.Sandbox
