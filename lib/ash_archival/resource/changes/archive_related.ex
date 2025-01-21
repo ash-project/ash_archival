@@ -5,7 +5,14 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
 
   def change(changeset, _, context) do
     Ash.Changeset.after_action(changeset, fn changeset, result ->
-      archive_related([result], changeset.resource, changeset.domain, context)
+      archive_related(
+        [result],
+        changeset.resource,
+        changeset.domain,
+        changeset.arguments,
+        context
+      )
+
       {:ok, result}
     end)
   end
@@ -15,7 +22,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   end
 
   def after_atomic(changeset, _, record, context) do
-    archive_related([record], changeset.resource, changeset.domain, context)
+    archive_related([record], changeset.resource, changeset.domain, changeset.arguments, context)
 
     :ok
   end
@@ -24,7 +31,13 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
     records =
       Enum.map(changesets_and_results, &elem(&1, 1))
 
-    archive_related(records, first_changeset.resource, first_changeset.domain, context)
+    archive_related(
+      records,
+      first_changeset.resource,
+      first_changeset.domain,
+      first_changeset.arguments,
+      context
+    )
 
     Enum.map(records, fn result ->
       {:ok, result}
@@ -45,11 +58,11 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
     |> Enum.any?()
   end
 
-  defp archive_related([], _, _, _) do
+  defp archive_related([], _, _, _, _) do
     :ok
   end
 
-  defp archive_related(data, resource, domain, context) do
+  defp archive_related(data, resource, domain, arguments, context) do
     opts =
       context
       |> Ash.Context.to_opts(
@@ -67,12 +80,18 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
       destroy_action =
         Ash.Resource.Info.primary_action!(relationship.destination, :destroy).name
 
+      arguments =
+        case AshArchival.Resource.Info.archive_archive_related_arguments(resource) do
+          {:ok, {module, options}} -> module.arguments(arguments, relationship, options)
+          _ -> %{}
+        end
+
       case related_query(data, relationship) do
         {:ok, query} ->
           Ash.bulk_destroy!(
             query,
             destroy_action,
-            %{},
+            arguments,
             Keyword.update(
               opts,
               :context,
