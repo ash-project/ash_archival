@@ -18,7 +18,7 @@ defmodule AshArchival.Test.WithArgsParent do
     exclude_read_actions :read
     archive_related [:children]
 
-    archive_related_arguments(CreateArgs)
+    archive_related_arguments CreateArgs
   end
 
   postgres do
