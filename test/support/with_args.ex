@@ -1,3 +1,12 @@
+defmodule CreateArgs do
+  @behaviour AshArchival.ArchiveRelatedArguments
+
+  @impl true
+  def arguments(arguments, _rel, _opts) do
+    %{arg: arguments[:arg]}
+  end
+end
+
 defmodule AshArchival.Test.WithArgsParent do
   @moduledoc false
   use Ash.Resource,
@@ -9,9 +18,7 @@ defmodule AshArchival.Test.WithArgsParent do
     exclude_read_actions :read
     archive_related [:children]
 
-    archive_related_arguments(fn arguments, _ ->
-      %{arg: arguments[:arg]}
-    end)
+    archive_related_arguments(CreateArgs)
   end
 
   postgres do
