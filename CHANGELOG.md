@@ -5,6 +5,19 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.1.0](https://github.com/ash-project/ash_archival/compare/v1.0.4...v1.1.0) (2025-01-27)
+
+
+
+
+### Features:
+
+* allow passing of arguments to related resources (#93)
+
+### Bug Fixes:
+
+* credo
+
 ## [v1.0.4](https://github.com/ash-project/ash_archival/compare/v1.0.3...v1.0.4) (2024-10-07)
 
 
