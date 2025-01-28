@@ -19,7 +19,7 @@ defmodule AshArchival.MixProject do
       aliases: aliases(),
       package: package(),
       deps: deps(),
-      docs: docs(),
+      docs: &docs/0,
       consolidate_protocols: Mix.env() != :test
     ]
   end
@@ -49,7 +49,8 @@ defmodule AshArchival.MixProject do
         "documentation/topics/unarchiving.md",
         "documentation/topics/how-does-ash-archival-work.md",
         "documentation/topics/upserts-and-identities.md",
-        "documentation/dsls/DSL-AshArchival.Resource.md",
+        {"documentation/dsls/DSL-AshArchival.Resource.md",
+         search_data: Spark.Docs.search_data_for(AshArchival.Resource)},
         "CHANGELOG.md"
       ],
       groups_for_extras: [
@@ -100,7 +101,7 @@ defmodule AshArchival.MixProject do
       {:ash_postgres, "~> 2.3", only: [:dev, :test]},
       {:simple_sat, "~> 0.1.0", only: [:dev, :test]},
       {:git_ops, "~> 2.5", only: [:dev, :test]},
-      {:ex_doc, "~> 0.32", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.37-rc", only: [:dev, :test], runtime: false},
       {:ex_check, "~> 0.14", only: [:dev, :test]},
       {:credo, ">= 0.0.0", only: [:dev, :test], runtime: false},
       {:dialyxir, ">= 0.0.0", only: [:dev, :test], runtime: false},
@@ -117,16 +118,13 @@ defmodule AshArchival.MixProject do
       docs: [
         "spark.cheat_sheets",
         "docs",
-        "spark.replace_doc_links",
-        "spark.cheat_sheets_in_search"
+        "spark.replace_doc_links"
       ],
       "test.create": "ash_postgres.create",
       "test.migrate": "ash_postgres.migrate",
       credo: "credo --strict",
       "spark.formatter": "spark.formatter --extensions AshArchival.Resource",
-      "spark.cheat_sheets": "spark.cheat_sheets --extensions AshArchival.Resource",
-      "spark.cheat_sheets_in_search":
-        "spark.cheat_sheets_in_search --extensions AshArchival.Resource"
+      "spark.cheat_sheets": "spark.cheat_sheets --extensions AshArchival.Resource"
     ]
   end
 

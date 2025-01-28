@@ -21,4 +21,4 @@ AshArchival is an [Ash](https://hexdocs.pm/ash) extension that provides a push-b
 
 ## Reference
 
-- [AshArchival DSL](documentation/dsls/DSL:-AshArchival.Resource.md)
+- [AshArchival DSL](documentation/dsls/DSL-AshArchival.Resource.md)
