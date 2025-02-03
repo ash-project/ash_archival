@@ -86,18 +86,19 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
           _ -> %{}
         end
 
+      context =
+        opts[:context]
+        |> Kernel.||(%{})
+        |> Map.put(:ash_archival, true)
+        |> Ash.Helpers.deep_merge_maps(relationship.context || %{})
+
       case related_query(data, relationship) do
         {:ok, query} ->
           Ash.bulk_destroy!(
             query,
             destroy_action,
             arguments,
-            Keyword.update(
-              opts,
-              :context,
-              %{ash_archival: true},
-              &Map.put(&1, :ash_archival, true)
-            )
+            Keyword.put(opts, :context, context)
           )
 
         :error ->
@@ -118,12 +119,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
           |> Ash.bulk_destroy!(
             destroy_action,
             %{},
-            Keyword.update(
-              opts,
-              :context,
-              %{ash_archival: true},
-              &Map.put(&1, :ash_archival, true)
-            )
+            Keyword.put(opts, :context, context)
           )
       end
     end)
@@ -150,7 +146,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
        )
        |> elem(1)
        |> filter_by_keys(relationship, records)
-       |> Ash.Query.set_context(%{ash_archival: true})}
+       |> Ash.Query.set_context(%{ash_archival: true})
+       |> Ash.Query.set_context(relationship.context || %{})}
     end
   end
 
