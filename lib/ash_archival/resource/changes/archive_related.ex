@@ -62,7 +62,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
     :ok
   end
 
-  defp archive_related(data, resource, domain, arguments, context) do
+  defp archive_related(data, resource, domain, arguments, %{tenant: tenant} = context) do
     opts =
       context
       |> Ash.Context.to_opts(
@@ -109,7 +109,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
               {relationship.name,
                Ash.Query.set_context(relationship.destination, %{ash_archival: true})}
             ],
-            authorize?: false
+            authorize?: false,
+            tenant: tenant
           )
           |> Enum.flat_map(fn record ->
             record
