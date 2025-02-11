@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.1.1](https://github.com/ash-project/ash_archival/compare/v1.1.0...v1.1.1) (2025-02-11)
+
+
+
+
+### Bug Fixes:
+
+* pass tenant to load in archive related (#101)
+
+* set relationship context on bulk destroy
+
 ## [v1.1.0](https://github.com/ash-project/ash_archival/compare/v1.0.4...v1.1.0) (2025-01-27)
 
 
