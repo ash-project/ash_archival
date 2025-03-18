@@ -92,7 +92,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
         |> Map.put(:ash_archival, true)
         |> Ash.Helpers.deep_merge_maps(relationship.context || %{})
 
-      case related_query(data, relationship) do
+      case related_query(data, relationship, opts) do
         {:ok, query} ->
           Ash.bulk_destroy!(
             query,
@@ -130,11 +130,11 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   # allowing us not to fetch this relationship in the case that data layers
   # support lateral joining. Not sure if this would "just work" to be paired
   # with `update_query` or if we would need a separate callback.
-  defp related_query(_records, %{type: :many_to_many}) do
+  defp related_query(_records, %{type: :many_to_many}, _opts) do
     :error
   end
 
-  defp related_query(records, relationship) do
+  defp related_query(records, relationship, opts) do
     if Ash.Actions.Read.Relationships.has_parent_expr?(relationship) do
       :error
     else
@@ -148,7 +148,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
        |> elem(1)
        |> filter_by_keys(relationship, records)
        |> Ash.Query.set_context(%{ash_archival: true})
-       |> Ash.Query.set_context(relationship.context || %{})}
+       |> Ash.Query.set_context(relationship.context || %{})
+       |> Ash.Query.set_tenant(opts[:tenant])}
     end
   end
 
