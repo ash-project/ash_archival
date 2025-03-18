@@ -1,17 +1,17 @@
-defmodule AshArchival.Test.Post do
+defmodule AshStorage.Test.Post do
   @moduledoc false
   use Ash.Resource,
-    domain: AshArchival.Test.Domain,
+    domain: AshStorage.Test.Domain,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshArchival.Resource]
+    extensions: [AshStorage.Resource]
 
-  archive do
+  storage do
     exclude_read_actions :all_posts
   end
 
   postgres do
     table("posts")
-    repo(AshArchival.TestRepo)
+    repo(AshStorage.TestRepo)
   end
 
   attributes do
@@ -24,10 +24,10 @@ defmodule AshArchival.Test.Post do
 
     read(:all_posts)
 
-    update :unarchive do
+    update :unstorage do
       accept([])
       atomic_upgrade_with(:all_posts)
-      change(set_attribute(:archived_at, nil))
+      change(set_attribute(:stored_at, nil))
     end
   end
 end

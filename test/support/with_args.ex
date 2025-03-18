@@ -2,7 +2,7 @@ defmodule CreateArgs do
   @moduledoc """
   The behaviour for specifiying arguments for related resources
   """
-  @behaviour AshArchival.ArchiveRelatedArguments
+  @behaviour AshStorage.StorageRelatedArguments
 
   @impl true
   def arguments(arguments, _rel, _opts) do
@@ -10,23 +10,23 @@ defmodule CreateArgs do
   end
 end
 
-defmodule AshArchival.Test.WithArgsParent do
+defmodule AshStorage.Test.WithArgsParent do
   @moduledoc false
   use Ash.Resource,
-    domain: AshArchival.Test.Domain,
+    domain: AshStorage.Test.Domain,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshArchival.Resource]
+    extensions: [AshStorage.Resource]
 
-  archive do
+  storage do
     exclude_read_actions :read
-    archive_related [:children]
+    storage_related [:children]
 
-    archive_related_arguments CreateArgs
+    storage_related_arguments CreateArgs
   end
 
   postgres do
     table("with_args_parents")
-    repo(AshArchival.TestRepo)
+    repo(AshStorage.TestRepo)
   end
 
   attributes do
@@ -38,7 +38,7 @@ defmodule AshArchival.Test.WithArgsParent do
     default_accept(:*)
     defaults([:create, :read, :update])
 
-    destroy :archive do
+    destroy :storage do
       primary?(true)
       accept([])
 
@@ -51,27 +51,27 @@ defmodule AshArchival.Test.WithArgsParent do
   end
 
   relationships do
-    has_many(:children, AshArchival.Test.WithArgsChild) do
+    has_many(:children, AshStorage.Test.WithArgsChild) do
       destination_attribute(:parent_id)
       source_attribute(:id)
     end
   end
 end
 
-defmodule AshArchival.Test.WithArgsChild do
+defmodule AshStorage.Test.WithArgsChild do
   @moduledoc false
   use Ash.Resource,
-    domain: AshArchival.Test.Domain,
+    domain: AshStorage.Test.Domain,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshArchival.Resource]
+    extensions: [AshStorage.Resource]
 
-  archive do
+  storage do
     exclude_read_actions :read
   end
 
   postgres do
     table("with_args_children")
-    repo(AshArchival.TestRepo)
+    repo(AshStorage.TestRepo)
   end
 
   attributes do
@@ -83,7 +83,7 @@ defmodule AshArchival.Test.WithArgsChild do
     default_accept(:*)
     defaults([:create, :read, :update])
 
-    destroy :archive do
+    destroy :storage do
       primary?(true)
       accept([])
 
@@ -96,7 +96,7 @@ defmodule AshArchival.Test.WithArgsChild do
   end
 
   relationships do
-    belongs_to(:parent, AshArchival.Test.WithArgsParent) do
+    belongs_to(:parent, AshStorage.Test.WithArgsParent) do
       public?(true)
     end
   end

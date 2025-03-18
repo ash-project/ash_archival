@@ -1,4 +1,4 @@
-defmodule AshArchival.TestRepo.Migrations.AddArgTestResources do
+defmodule AshStorage.TestRepo.Migrations.AddArgTestResources do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -11,7 +11,7 @@ defmodule AshArchival.TestRepo.Migrations.AddArgTestResources do
     create table(:with_args_parents, primary_key: false) do
       add(:id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true)
       add(:arg1, :text)
-      add(:archived_at, :utc_datetime_usec)
+      add(:stored_at, :utc_datetime_usec)
     end
 
     create table(:with_args_children, primary_key: false) do
@@ -28,7 +28,7 @@ defmodule AshArchival.TestRepo.Migrations.AddArgTestResources do
         )
       )
 
-      add(:archived_at, :utc_datetime_usec)
+      add(:stored_at, :utc_datetime_usec)
     end
   end
 

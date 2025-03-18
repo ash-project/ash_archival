@@ -1,7 +1,7 @@
-defmodule AshArchival.TestRepo do
+defmodule AshStorage.TestRepo do
   @moduledoc false
   use AshPostgres.Repo,
-    otp_app: :ash_archival
+    otp_app: :ash_storage
 
   def on_transaction_begin(data) do
     send(self(), data)

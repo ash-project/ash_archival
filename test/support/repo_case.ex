@@ -1,4 +1,4 @@
-defmodule AshArchival.RepoCase do
+defmodule AshStorage.RepoCase do
   @moduledoc false
   use ExUnit.CaseTemplate
 
@@ -6,21 +6,21 @@ defmodule AshArchival.RepoCase do
 
   using do
     quote do
-      alias AshArchival.TestRepo
+      alias AshStorage.TestRepo
 
       import Ecto
       import Ecto.Query
-      import AshArchival.RepoCase
+      import AshStorage.RepoCase
 
       # and any other stuff
     end
   end
 
   setup tags do
-    :ok = Sandbox.checkout(AshArchival.TestRepo)
+    :ok = Sandbox.checkout(AshStorage.TestRepo)
 
     unless tags[:async] do
-      Sandbox.mode(AshArchival.TestRepo, {:shared, self()})
+      Sandbox.mode(AshStorage.TestRepo, {:shared, self()})
     end
 
     :ok

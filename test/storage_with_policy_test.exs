@@ -1,11 +1,11 @@
-defmodule ArchivalWithPolicyTest do
+defmodule StorageWithPolicyTest do
   use ExUnit.Case
 
   defmodule Author do
     use Ash.Resource,
-      domain: ArchivalWithPolicyTest.Domain,
+      domain: StorageWithPolicyTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource],
+      extensions: [AshStorage.Resource],
       authorizers: [Ash.Policy.Authorizer]
 
     ets do
@@ -13,8 +13,8 @@ defmodule ArchivalWithPolicyTest do
       private?(true)
     end
 
-    archive do
-      archive_related([:posts])
+    storage do
+      storage_related([:posts])
     end
 
     actions do
@@ -27,7 +27,7 @@ defmodule ArchivalWithPolicyTest do
     end
 
     relationships do
-      has_many(:posts, ArchivalWithPolicyTest.Post) do
+      has_many(:posts, StorageWithPolicyTest.Post) do
         public?(true)
       end
     end
@@ -41,9 +41,9 @@ defmodule ArchivalWithPolicyTest do
     end
   end
 
-  defmodule AuthorWithArchive do
+  defmodule AuthorWithStorage do
     use Ash.Resource,
-      domain: ArchivalWithPolicyTest.Domain,
+      domain: StorageWithPolicyTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -58,15 +58,15 @@ defmodule ArchivalWithPolicyTest do
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec, public?: true)
+      attribute(:stored_at, :utc_datetime_usec, public?: true)
     end
   end
 
   defmodule Post do
     use Ash.Resource,
-      domain: ArchivalWithPolicyTest.Domain,
+      domain: StorageWithPolicyTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource],
+      extensions: [AshStorage.Resource],
       authorizers: [Ash.Policy.Authorizer]
 
     ets do
@@ -74,8 +74,8 @@ defmodule ArchivalWithPolicyTest do
       private?(true)
     end
 
-    archive do
-      archive_related([:comments])
+    storage do
+      storage_related([:comments])
     end
 
     actions do
@@ -93,7 +93,7 @@ defmodule ArchivalWithPolicyTest do
         attribute_writable?(true)
       end
 
-      has_many(:comments, ArchivalWithPolicyTest.Comment) do
+      has_many(:comments, StorageWithPolicyTest.Comment) do
         public?(true)
       end
     end
@@ -107,9 +107,9 @@ defmodule ArchivalWithPolicyTest do
     end
   end
 
-  defmodule PostWithArchive do
+  defmodule PostWithStorage do
     use Ash.Resource,
-      domain: ArchivalWithPolicyTest.Domain,
+      domain: StorageWithPolicyTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -124,15 +124,15 @@ defmodule ArchivalWithPolicyTest do
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec, public?: true)
+      attribute(:stored_at, :utc_datetime_usec, public?: true)
     end
   end
 
   defmodule Comment do
     use Ash.Resource,
-      domain: ArchivalWithPolicyTest.Domain,
+      domain: StorageWithPolicyTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource],
+      extensions: [AshStorage.Resource],
       authorizers: [Ash.Policy.Authorizer]
 
     ets do
@@ -165,9 +165,9 @@ defmodule ArchivalWithPolicyTest do
     end
   end
 
-  defmodule CommentWithArchive do
+  defmodule CommentWithStorage do
     use Ash.Resource,
-      domain: ArchivalWithPolicyTest.Domain,
+      domain: StorageWithPolicyTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -182,7 +182,7 @@ defmodule ArchivalWithPolicyTest do
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec, public?: true)
+      attribute(:stored_at, :utc_datetime_usec, public?: true)
     end
   end
 
@@ -195,15 +195,15 @@ defmodule ArchivalWithPolicyTest do
 
     resources do
       resource(Author)
-      resource(AuthorWithArchive)
+      resource(AuthorWithStorage)
       resource(Post)
-      resource(PostWithArchive)
+      resource(PostWithStorage)
       resource(Comment)
-      resource(CommentWithArchive)
+      resource(CommentWithStorage)
     end
   end
 
-  test "destroying a record archives it" do
+  test "destroying a record stores it" do
     comment =
       Comment
       |> Ash.Changeset.for_create(:create)
@@ -211,12 +211,12 @@ defmodule ArchivalWithPolicyTest do
 
     assert :ok = comment |> Ash.destroy!(actor: %{admin: true})
 
-    [archived] = Ash.read!(CommentWithArchive)
-    assert archived.id == comment.id
-    assert archived.archived_at
+    [stored] = Ash.read!(CommentWithStorage)
+    assert stored.id == comment.id
+    assert stored.stored_at
   end
 
-  test "destroying a record archives any `archive_related` it has configured" do
+  test "destroying a record stores any `storage_related` it has configured" do
     post =
       Post
       |> Ash.Changeset.for_create(:create)
@@ -229,12 +229,12 @@ defmodule ArchivalWithPolicyTest do
 
     assert :ok = post |> Ash.destroy!(actor: %{admin: true})
 
-    [archived] = Ash.read!(CommentWithArchive)
-    assert archived.id == comment.id
-    assert archived.archived_at
+    [stored] = Ash.read!(CommentWithStorage)
+    assert stored.id == comment.id
+    assert stored.stored_at
   end
 
-  test "destroying a record triggers a cascading archive." do
+  test "destroying a record triggers a cascading storage." do
     author =
       Author
       |> Ash.Changeset.for_create(:create)
@@ -252,12 +252,12 @@ defmodule ArchivalWithPolicyTest do
 
     assert :ok = author |> Ash.destroy!(actor: %{admin: true})
 
-    [archived_post] = Ash.read!(PostWithArchive)
-    assert archived_post.id == post.id
-    assert archived_post.archived_at
+    [stored_post] = Ash.read!(PostWithStorage)
+    assert stored_post.id == post.id
+    assert stored_post.stored_at
 
-    [archived_comment] = Ash.read!(CommentWithArchive)
-    assert archived_comment.id == comment.id
-    assert archived_comment.archived_at
+    [stored_comment] = Ash.read!(CommentWithStorage)
+    assert stored_comment.id == comment.id
+    assert stored_comment.stored_at
   end
 end

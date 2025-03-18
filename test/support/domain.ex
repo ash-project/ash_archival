@@ -1,10 +1,10 @@
-defmodule AshArchival.Test.Domain do
+defmodule AshStorage.Test.Domain do
   @moduledoc false
   use Ash.Domain
 
   resources do
-    resource(AshArchival.Test.Post)
-    resource(AshArchival.Test.WithArgsParent)
-    resource(AshArchival.Test.WithArgsChild)
+    resource(AshStorage.Test.Post)
+    resource(AshStorage.Test.WithArgsParent)
+    resource(AshStorage.Test.WithArgsChild)
   end
 end

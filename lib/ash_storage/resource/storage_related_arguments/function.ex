@@ -1,7 +1,7 @@
-defmodule AshArchival.ArchiveRelatedArguments.Function do
+defmodule AshStorage.StorageRelatedArguments.Function do
   @moduledoc false
 
-  @behaviour AshArchival.ArchiveRelatedArguments
+  @behaviour AshStorage.StorageRelatedArguments
 
   @impl true
   def arguments(arguments, relationship, [{:fun, {m, f, a}}]) do

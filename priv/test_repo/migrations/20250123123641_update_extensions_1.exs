@@ -1,4 +1,4 @@
-defmodule AshArchival.TestRepo.Migrations.UpdateExtensions1 do
+defmodule AshStorage.TestRepo.Migrations.UpdateExtensions1 do
   @moduledoc """
   Installs any extensions that are mentioned in the repo's `installed_extensions/0` callback
 

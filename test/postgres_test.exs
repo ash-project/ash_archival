@@ -1,21 +1,21 @@
-defmodule AshArchival.PostgresTest do
-  use AshArchival.RepoCase
+defmodule AshStorage.PostgresTest do
+  use AshStorage.RepoCase
 
-  alias AshArchival.Test.Post
+  alias AshStorage.Test.Post
   require Ash.Query
 
-  test "unarchival works" do
+  test "unstorage works" do
     assert %Post{} =
              Post
              |> Ash.Changeset.for_create(:create)
              |> Ash.create!()
              |> Ash.Changeset.for_destroy(:destroy)
              |> Ash.destroy!(return_destroyed?: true)
-             |> Ash.Changeset.for_update(:unarchive)
+             |> Ash.Changeset.for_update(:unstorage)
              |> Ash.update!()
   end
 
-  test "bulk unarchival works" do
+  test "bulk unstorage works" do
     assert %Ash.BulkResult{records: [%Post{}]} =
              Post
              |> Ash.Changeset.for_create(:create)
@@ -26,6 +26,6 @@ defmodule AshArchival.PostgresTest do
                Post
                |> Ash.Query.filter(id == ^post.id)
              end)
-             |> Ash.bulk_update!(:unarchive, %{}, return_records?: true)
+             |> Ash.bulk_update!(:unstorage, %{}, return_records?: true)
   end
 end

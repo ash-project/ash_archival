@@ -1,10 +1,10 @@
-defmodule AshArchival.Test.ArgumentTest do
-  use AshArchival.RepoCase
+defmodule AshStorage.Test.ArgumentTest do
+  use AshStorage.RepoCase
 
-  alias AshArchival.Test.WithArgsChild
-  alias AshArchival.Test.WithArgsParent
+  alias AshStorage.Test.WithArgsChild
+  alias AshStorage.Test.WithArgsParent
 
-  test "can pass arguments when archiving related resources" do
+  test "can pass arguments when storing related resources" do
     parent =
       WithArgsParent
       |> Ash.Changeset.for_create(:create)
@@ -15,7 +15,7 @@ defmodule AshArchival.Test.ArgumentTest do
     |> Ash.create!()
 
     parent
-    |> Ash.Changeset.for_destroy(:archive, %{arg: "test"})
+    |> Ash.Changeset.for_destroy(:storage, %{arg: "test"})
     |> Ash.destroy!()
 
     parent =

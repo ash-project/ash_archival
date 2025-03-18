@@ -1,18 +1,18 @@
-defmodule AshArchival.MixProject do
+defmodule AshStorage.MixProject do
   use Mix.Project
 
   @version "1.1.1"
   @description """
-  An Ash extension to implement archival (soft deletion) for resources.
+  An Ash extension to implement storage for resources.
   """
 
   def project do
     [
-      app: :ash_archival,
+      app: :ash_storage,
       version: @version,
       elixir: "~> 1.13",
-      source_url: "https://github.com/ash-project/ash_archival",
-      homepage_url: "https://github.com/ash-project/ash_archival",
+      source_url: "https://github.com/ash-project/ash_storage",
+      homepage_url: "https://github.com/ash-project/ash_storage",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: @description,
@@ -29,12 +29,12 @@ defmodule AshArchival.MixProject do
 
   defp package do
     [
-      name: :ash_archival,
+      name: :ash_storage,
       licenses: ["MIT"],
       files: ~w(lib .formatter.exs mix.exs README* LICENSE*
       CHANGELOG* documentation),
       links: %{
-        GitHub: "https://github.com/ash-project/ash_archival"
+        GitHub: "https://github.com/ash-project/ash_storage"
       }
     ]
   end
@@ -45,12 +45,12 @@ defmodule AshArchival.MixProject do
       source_ref: "v#{@version}",
       extras: [
         {"README.md", title: "Home"},
-        "documentation/tutorials/get-started-with-ash-archival.md",
-        "documentation/topics/unarchiving.md",
-        "documentation/topics/how-does-ash-archival-work.md",
+        "documentation/tutorials/get-started-with-ash-storage.md",
+        "documentation/topics/unstorage.md",
+        "documentation/topics/how-does-ash-storage-work.md",
         "documentation/topics/upserts-and-identities.md",
-        {"documentation/dsls/DSL-AshArchival.Resource.md",
-         search_data: Spark.Docs.search_data_for(AshArchival.Resource)},
+        {"documentation/dsls/DSL-AshStorage.Resource.md",
+         search_data: Spark.Docs.search_data_for(AshStorage.Resource)},
         "CHANGELOG.md"
       ],
       groups_for_extras: [
@@ -76,11 +76,11 @@ defmodule AshArchival.MixProject do
       end,
       groups_for_modules: [
         Extension: [
-          AshArchival,
-          AshArchival.Resource
+          AshStorage,
+          AshStorage.Resource
         ],
         Introspection: [
-          AshArchival.Resource.Info
+          AshStorage.Resource.Info
         ]
       ]
     ]
@@ -123,8 +123,8 @@ defmodule AshArchival.MixProject do
       "test.create": "ash_postgres.create",
       "test.migrate": "ash_postgres.migrate",
       credo: "credo --strict",
-      "spark.formatter": "spark.formatter --extensions AshArchival.Resource",
-      "spark.cheat_sheets": "spark.cheat_sheets --extensions AshArchival.Resource"
+      "spark.formatter": "spark.formatter --extensions AshStorage.Resource",
+      "spark.cheat_sheets": "spark.cheat_sheets --extensions AshStorage.Resource"
     ]
   end
 

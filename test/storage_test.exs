@@ -1,19 +1,19 @@
-defmodule ArchivalTest do
+defmodule StorageTest do
   use ExUnit.Case
 
   defmodule Author do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshStorage.Resource]
 
     ets do
       table(:authors)
       private?(true)
     end
 
-    archive do
-      archive_related([:posts])
+    storage do
+      storage_related([:posts])
     end
 
     actions do
@@ -26,15 +26,15 @@ defmodule ArchivalTest do
     end
 
     relationships do
-      has_many(:posts, ArchivalTest.Post) do
+      has_many(:posts, StorageTest.Post) do
         public?(true)
       end
     end
   end
 
-  defmodule AuthorWithArchive do
+  defmodule AuthorWithStorage do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -49,23 +49,23 @@ defmodule ArchivalTest do
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec, public?: true)
+      attribute(:stored_at, :utc_datetime_usec, public?: true)
     end
   end
 
   defmodule Post do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshStorage.Resource]
 
     ets do
       table(:posts)
       private?(true)
     end
 
-    archive do
-      archive_related([:comments])
+    storage do
+      storage_related([:comments])
       exclude_read_actions :all_posts
     end
 
@@ -76,10 +76,10 @@ defmodule ArchivalTest do
 
       read(:all_posts)
 
-      update :unarchive do
+      update :unstorage do
         accept([])
         atomic_upgrade_with(:all_posts)
-        change(set_attribute(:archived_at, nil))
+        change(set_attribute(:stored_at, nil))
       end
     end
 
@@ -90,7 +90,7 @@ defmodule ArchivalTest do
     end
 
     identities do
-      identity(:unique_name, [:name], pre_check?: true, where: expr(is_nil(archived_at)))
+      identity(:unique_name, [:name], pre_check?: true, where: expr(is_nil(stored_at)))
       identity(:unique_title, [:title], pre_check?: true)
     end
 
@@ -100,24 +100,24 @@ defmodule ArchivalTest do
         attribute_writable?(true)
       end
 
-      has_many(:comments, ArchivalTest.Comment) do
+      has_many(:comments, StorageTest.Comment) do
         public?(true)
       end
     end
   end
 
-  defmodule UnarchivablePost do
+  defmodule UnstorageablePost do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshStorage.Resource]
 
     ets do
       table(:posts)
       private?(true)
     end
 
-    archive do
+    storage do
       exclude_read_actions :all_posts
     end
 
@@ -127,10 +127,10 @@ defmodule ArchivalTest do
 
       read(:all_posts)
 
-      update :unarchive do
+      update :unstorage do
         accept([])
         atomic_upgrade_with(:all_posts)
-        change(set_attribute(:archived_at, nil))
+        change(set_attribute(:stored_at, nil))
       end
     end
 
@@ -139,9 +139,9 @@ defmodule ArchivalTest do
     end
   end
 
-  defmodule PostWithArchive do
+  defmodule PostWithStorage do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -156,15 +156,15 @@ defmodule ArchivalTest do
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec, public?: true)
+      attribute(:stored_at, :utc_datetime_usec, public?: true)
     end
   end
 
   defmodule Comment do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets,
-      extensions: [AshArchival.Resource]
+      extensions: [AshStorage.Resource]
 
     ets do
       table(:comments)
@@ -188,9 +188,9 @@ defmodule ArchivalTest do
     end
   end
 
-  defmodule CommentWithArchive do
+  defmodule CommentWithStorage do
     use Ash.Resource,
-      domain: ArchivalTest.Domain,
+      domain: StorageTest.Domain,
       data_layer: Ash.DataLayer.Ets
 
     ets do
@@ -205,7 +205,7 @@ defmodule ArchivalTest do
 
     attributes do
       uuid_primary_key(:id)
-      attribute(:archived_at, :utc_datetime_usec, public?: true)
+      attribute(:stored_at, :utc_datetime_usec, public?: true)
     end
   end
 
@@ -214,16 +214,16 @@ defmodule ArchivalTest do
 
     resources do
       resource(Author)
-      resource(AuthorWithArchive)
+      resource(AuthorWithStorage)
       resource(Post)
-      resource(UnarchivablePost)
-      resource(PostWithArchive)
+      resource(UnstorageablePost)
+      resource(PostWithStorage)
       resource(Comment)
-      resource(CommentWithArchive)
+      resource(CommentWithStorage)
     end
   end
 
-  test "destroying a record archives it" do
+  test "destroying a record stores it" do
     post =
       Post
       |> Ash.Changeset.for_create(:create)
@@ -231,12 +231,12 @@ defmodule ArchivalTest do
 
     assert :ok = post |> Ash.destroy!()
 
-    [archived] = Ash.read!(PostWithArchive)
-    assert archived.id == post.id
-    assert archived.archived_at
+    [stored] = Ash.read!(PostWithStorage)
+    assert stored.id == post.id
+    assert stored.stored_at
   end
 
-  test "archived records are hidden" do
+  test "stored records are hidden" do
     post =
       Post
       |> Ash.Changeset.for_create(:create)
@@ -247,16 +247,16 @@ defmodule ArchivalTest do
     assert [] = Ash.read!(Post)
   end
 
-  test "archived records can be unarchived" do
-    assert %UnarchivablePost{} =
-             UnarchivablePost
+  test "stored records can be unstored" do
+    assert %UnstorageablePost{} =
+             UnstorageablePost
              |> Ash.Changeset.for_create(:create)
              |> Ash.create!()
-             |> Ash.Changeset.for_update(:unarchive)
+             |> Ash.Changeset.for_update(:unstorage)
              |> Ash.update!()
   end
 
-  test "upserts don't consider archived records if included in the identity" do
+  test "upserts don't consider stored records if included in the identity" do
     post =
       Post
       |> Ash.Changeset.for_create(:create, %{name: "fred"})
@@ -277,7 +277,7 @@ defmodule ArchivalTest do
              |> Ash.read!()
   end
 
-  test "upserts do consider archived records if not included in the identity" do
+  test "upserts do consider stored records if not included in the identity" do
     post =
       Post
       |> Ash.Changeset.for_create(:create, %{title: "fred"})
@@ -298,7 +298,7 @@ defmodule ArchivalTest do
              |> Ash.read!()
   end
 
-  test "destroying a record archives any `archive_related` it has configured" do
+  test "destroying a record stores any `storage_related` it has configured" do
     post =
       Post
       |> Ash.Changeset.for_create(:create)
@@ -311,12 +311,12 @@ defmodule ArchivalTest do
 
     assert :ok = post |> Ash.destroy!()
 
-    [archived] = Ash.read!(CommentWithArchive)
-    assert archived.id == comment.id
-    assert archived.archived_at
+    [stored] = Ash.read!(CommentWithStorage)
+    assert stored.id == comment.id
+    assert stored.stored_at
   end
 
-  test "destroying a record triggers a cascading archive." do
+  test "destroying a record triggers a cascading storage." do
     author =
       Author
       |> Ash.Changeset.for_create(:create)
@@ -334,13 +334,13 @@ defmodule ArchivalTest do
 
     assert :ok = author |> Ash.destroy!()
 
-    [archived_post] = Ash.read!(PostWithArchive)
-    assert archived_post.id == post.id
-    assert archived_post.archived_at
+    [stored_post] = Ash.read!(PostWithStorage)
+    assert stored_post.id == post.id
+    assert stored_post.stored_at
 
-    [archived_comment] = Ash.read!(CommentWithArchive)
-    assert archived_comment.id == comment.id
-    assert archived_comment.archived_at
+    [stored_comment] = Ash.read!(CommentWithStorage)
+    assert stored_comment.id == comment.id
+    assert stored_comment.stored_at
   end
 
   test "destroyed records can be returned" do
@@ -349,7 +349,7 @@ defmodule ArchivalTest do
       |> Ash.Changeset.for_create(:create)
       |> Ash.create!()
 
-    assert {:ok, %{archived_at: archived_at}} = Ash.destroy(author, return_destroyed?: true)
-    assert archived_at
+    assert {:ok, %{stored_at: stored_at}} = Ash.destroy(author, return_destroyed?: true)
+    assert stored_at
   end
 end

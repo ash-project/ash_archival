@@ -1,4 +1,4 @@
-defmodule AshArchival.ArchiveRelatedArguments do
+defmodule AshStorage.StorageRelatedArguments do
   @moduledoc """
   The behaviour for specifiying arguments for related resources
   """

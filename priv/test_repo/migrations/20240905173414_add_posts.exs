@@ -1,4 +1,4 @@
-defmodule AshArchival.TestRepo.Migrations.AddPosts do
+defmodule AshStorage.TestRepo.Migrations.AddPosts do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -10,7 +10,7 @@ defmodule AshArchival.TestRepo.Migrations.AddPosts do
   def up do
     create table(:posts, primary_key: false) do
       add(:id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true)
-      add(:archived_at, :utc_datetime_usec)
+      add(:stored_at, :utc_datetime_usec)
     end
   end
 
