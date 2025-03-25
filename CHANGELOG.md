@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v1.1.2](https://github.com/ash-project/ash_archival/compare/v1.1.1...v1.1.2) (2025-03-25)
+
+
+
+
+### Bug Fixes:
+
+* missing tenant in related_query/2 of ArchiveRelated (#118)
+
 ## [v1.1.1](https://github.com/ash-project/ash_archival/compare/v1.1.0...v1.1.1) (2025-02-11)
 
 
