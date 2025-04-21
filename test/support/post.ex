@@ -3,11 +3,7 @@ defmodule AshArchival.Test.Post do
   use Ash.Resource,
     domain: AshArchival.Test.Domain,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshArchival.Resource]
-
-  archive do
-    exclude_read_actions :all_posts
-  end
+    fragments: [AshArchival.Test.Post.Archival]
 
   postgres do
     table("posts")
