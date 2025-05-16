@@ -209,6 +209,78 @@ defmodule ArchivalTest do
     end
   end
 
+  defmodule Widget do
+    use Ash.Resource,
+      domain: ArchivalTest.Domain,
+      data_layer: Ash.DataLayer.Ets,
+      extensions: [AshArchival.Resource]
+
+    ets do
+      table(:widgets)
+      private?(true)
+    end
+
+    actions do
+      defaults([:read, :destroy, create: :*, update: :*])
+    end
+
+    attributes do
+      uuid_primary_key(:id)
+    end
+
+    relationships do
+      has_one :sprocket, ArchivalTest.Sprocket do
+        public?(true)
+        read_action(:read_for_widget)
+      end
+    end
+
+    archive do
+      archive_related [:sprocket]
+    end
+  end
+
+  defmodule Sprocket do
+    use Ash.Resource,
+      domain: ArchivalTest.Domain,
+      data_layer: Ash.DataLayer.Ets,
+      authorizers: [Ash.Policy.Authorizer]
+
+    ets do
+      table(:sprockets)
+      private?(true)
+    end
+
+    policies do
+      policy action(:read_for_widget) do
+        forbid_unless(context_equals(:actor, "Doc Brown"))
+        forbid_unless(context_equals(:tenant, "Dr. E. Brown Enterprises"))
+        authorize_if(always())
+      end
+
+      policy always() do
+        authorize_if(always())
+      end
+    end
+
+    actions do
+      defaults([:read, :destroy, create: :*, update: :*])
+
+      read :read_for_widget do
+      end
+    end
+
+    attributes do
+      uuid_primary_key(:id)
+    end
+
+    relationships do
+      belongs_to :widget, ArchivalTest.Widget do
+        public?(true)
+      end
+    end
+  end
+
   defmodule Domain do
     use Ash.Domain
 
@@ -220,6 +292,8 @@ defmodule ArchivalTest do
       resource(PostWithArchive)
       resource(Comment)
       resource(CommentWithArchive)
+      resource(Sprocket)
+      resource(Widget)
     end
   end
 
@@ -351,5 +425,22 @@ defmodule ArchivalTest do
 
     assert {:ok, %{archived_at: archived_at}} = Ash.destroy(author, return_destroyed?: true)
     assert archived_at
+  end
+
+  test "the actor and tenant are passed through to related read actions when destroying" do
+    widget = Widget |> Ash.create!(%{}, authorize?: false)
+    sprocket = Sprocket |> Ash.create!(%{widget_id: widget.id})
+
+    assert {:ok, widget} =
+             widget
+             |> Ash.Changeset.for_destroy(:destroy, %{},
+               actor: "Doc Brown",
+               tenant: "Dr. E. Brown Enterprises"
+             )
+             |> Ash.destroy(return_destroyed?: true)
+
+    assert widget.archived_at
+
+    assert {:error, _} = Ash.reload(sprocket)
   end
 end
