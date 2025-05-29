@@ -25,7 +25,7 @@ use Ash.Resource,
 
 And thats it! Now, when you destroy a record, it will be archived instead, using an `archived_at` attribute.
 
-See [How Does Ash Archival Work?](/documentation/tutorials/get-started-with-ash-archival.md) for what modifications are made to a resource, and read on for info on the tradeoffs of leveraging `d:Ash.Resource.Dsl.resource.base_filter`.
+See [How Does Ash Archival Work?](/documentation/topics/how-does-ash-archival-work.md) for what modifications are made to a resource, and read on for info on the tradeoffs of leveraging `d:Ash.Resource.Dsl.resource.base_filter`.
 
 ## Base Filter
 
