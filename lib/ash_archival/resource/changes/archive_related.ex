@@ -4,6 +4,15 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   require Ash.Query
 
   def change(changeset, _, context) do
+    context =
+      case AshArchival.Info.archive_related_authorize?(changeset.resource) do
+        true ->
+          %{context | authorize?: context.authorize?}
+
+        _ ->
+          %{context | authorize?: false}
+      end
+
     Ash.Changeset.after_action(changeset, fn changeset, result ->
       archive_related(
         [result],
@@ -109,8 +118,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
               {relationship.name,
                Ash.Query.set_context(relationship.destination, %{ash_archival: true})}
             ],
-            authorize?: false,
-            tenant: tenant
+            opts
           )
           |> Enum.flat_map(fn record ->
             record
@@ -144,6 +152,14 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
          records,
          Ash.Query.new(relationship.destination),
          Ash.Query.new(relationship.source)
+         |> Ash.Query.set_context(%{
+           private: %{
+             actor: opts[:actor],
+             tenant: opts[:tenant],
+             authorize?: opts[:authorize?],
+             tracer: opts[:tracer]
+           }
+         })
        )
        |> elem(1)
        |> filter_by_keys(relationship, records)
