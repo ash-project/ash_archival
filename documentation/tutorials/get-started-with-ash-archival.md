@@ -54,6 +54,36 @@ Add `base_filter? true` to the `archive` configuration of your resource to tell 
 
 If you want these benefits, add the appropriate `base_filter`.
 
+## archive_related_authorize?
+
+The `archive_related_authorize?` option controls whether authorization checks are enforced when archiving related records during a destroy operation.
+
+```elixir
+defmodule MyApp.Post do
+  use Ash.Resource,
+    extensions: [AshArchival.Resource]
+
+  archive do
+    archive_related([:comments])
+    archive_related_authorize?(false)  # Recommended: bypass authorization for related records
+  end
+end
+```
+
+**Default behavior (`archive_related_authorize?: true`):**
+- Authorization policies are enforced when archiving related records
+- If the actor lacks permission to read or destroy a record, that record will be *skipped*
+- Only related records the actor is authorized to destroy will be archived
+
+**Recommended behavior (`archive_related_authorize?: false`):**
+- Authorization checks are bypassed when archiving related records
+- All related records are archived regardless of the actor's permissions on those specific records
+- The operation succeeds even if the actor wouldn't normally be able to destroy some related records
+
+**Why set it to false?**
+
+You typically want to set `archive_related_authorize?` to `false` because when you archive a parent record, you usually want ALL related records to be archived together, regardless of individual permissions. You typically just want to authorize the actor to archive the record in question, not all descendents.
+
 ## More
 
 See the [Unarchiving guide](/documentation/topics/unarchiving.md) For more.

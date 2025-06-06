@@ -5,7 +5,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
 
   def change(changeset, _, context) do
     context =
-      case AshArchival.Info.archive_related_authorize?(changeset.resource) do
+      case AshArchival.Resource.Info.archive_archive_related_authorize?(changeset.resource) do
         true ->
           %{context | authorize?: context.authorize?}
 
@@ -71,7 +71,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
     :ok
   end
 
-  defp archive_related(data, resource, domain, arguments, %{tenant: tenant} = context) do
+  defp archive_related(data, resource, domain, arguments, context) do
     opts =
       context
       |> Ash.Context.to_opts(

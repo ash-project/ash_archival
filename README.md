@@ -18,6 +18,7 @@ AshArchival is an [Ash](https://hexdocs.pm/ash) extension that provides a push-b
 
 - [How does AshArchival work?](documentation/topics/how-does-ash-archival-work.md)
 - [Unarchiving](documentation/topics/unarchiving.md)
+- [Upgrading to 2.0](documentation/topics/upgrading-to-2.0.md)
 
 ## Reference
 

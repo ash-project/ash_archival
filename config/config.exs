@@ -1,5 +1,7 @@
 import Config
 
+config :ash, :policies, show_policy_breakdowns?: true
+
 if Mix.env() == :test do
   config :ash_archival, ash_domains: [AshArchival.Test.Domain]
 
