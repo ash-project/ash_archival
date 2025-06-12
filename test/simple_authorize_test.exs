@@ -67,7 +67,8 @@ defmodule SimpleAuthorizeTest do
 
     archive do
       archive_related([:posts])
-      archive_related_authorize?(false)  # Disable authorization for related records
+      # Disable authorization for related records
+      archive_related_authorize?(false)
     end
 
     actions do
@@ -267,6 +268,7 @@ defmodule SimpleAuthorizeTest do
         ArgumentError -> :ok
       end
     end)
+
     :ok
   end
 
@@ -348,7 +350,7 @@ defmodule SimpleAuthorizeTest do
 
       # No posts should remain active
       remaining_posts = Ash.read!(PostWithAuth)
-      assert length(remaining_posts) == 0
+      assert Enum.empty?(remaining_posts)
     end
   end
 
@@ -393,7 +395,7 @@ defmodule SimpleAuthorizeTest do
 
       # No posts should remain active
       remaining_posts = Ash.read!(PostNoAuth)
-      assert length(remaining_posts) == 0
+      assert Enum.empty?(remaining_posts)
     end
   end
 end

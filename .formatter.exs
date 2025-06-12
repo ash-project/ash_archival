@@ -1,6 +1,7 @@
 spark_locals_without_parens = [
   archive_related: 1,
   archive_related_arguments: 1,
+  archive_related_authorize?: 1,
   attribute: 1,
   attribute_type: 1,
   base_filter?: 1,
