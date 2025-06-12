@@ -27,6 +27,7 @@ A section for configuring how archival is configured for a resource.
 | [`exclude_upsert_actions`](#archive-exclude_upsert_actions){: #archive-exclude_upsert_actions } | `atom \| list(atom)` | `[]` | This option is deprecated as it no longer has any effect. Upserts are handled according to the upsert identity. See the upserts guide for more. |
 | [`exclude_destroy_actions`](#archive-exclude_destroy_actions){: #archive-exclude_destroy_actions } | `atom \| list(atom)` | `[]` | A destroy action or actions that should *not* archive, but instead be left alone. This allows for having a destroy *or* archive pattern. |
 | [`archive_related`](#archive-archive_related){: #archive-archive_related } | `list(atom)` | `[]` | A list of relationships that should have all related items archived when this is archived. Notifications are not sent for this operation. |
+| [`archive_related_authorize?`](#archive-archive_related_authorize?){: #archive-archive_related_authorize? } | `boolean` | `true` | Whether or not to run authorization checks when reading and archiving related records. |
 | [`archive_related_arguments`](#archive-archive_related_arguments){: #archive-archive_related_arguments } | `(any, any -> any) \| module` |  | A function to allow passing along some of the arguments to related resources when archiving them. |
 
 

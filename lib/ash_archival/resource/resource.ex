@@ -51,7 +51,8 @@ defmodule AshArchival.Resource do
       archive_related_authorize?: [
         type: :boolean,
         default: true,
-        doc: "Whether or not to run authorization checks when reading and archiving related records."
+        doc:
+          "Whether or not to run authorization checks when reading and archiving related records."
       ],
       archive_related_arguments: [
         type:
