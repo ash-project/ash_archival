@@ -1,7 +1,7 @@
 defmodule AshArchival.MixProject do
   use Mix.Project
 
-  @version "1.1.2"
+  @version "2.0.0"
   @description """
   An Ash extension to implement archival (soft deletion) for resources.
   """

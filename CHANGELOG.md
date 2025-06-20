@@ -5,6 +5,13 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v2.0.0](https://github.com/ash-project/ash_archival/compare/v1.1.2...v2.0.0) (2025-06-20)
+### Breaking Changes:
+
+* add `archive_related_authorize?`, and default it to `true` by Zach Daniel
+
+
+
 ## [v1.1.2](https://github.com/ash-project/ash_archival/compare/v1.1.1...v1.1.2) (2025-03-25)
 
 
