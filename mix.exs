@@ -51,6 +51,7 @@ defmodule AshArchival.MixProject do
         {"README.md", title: "Home"},
         "documentation/tutorials/get-started-with-ash-archival.md",
         "documentation/topics/unarchiving.md",
+        "documentation/topics/upgrading-to-2.0.md",
         "documentation/topics/how-does-ash-archival-work.md",
         "documentation/topics/upserts-and-identities.md",
         {"documentation/dsls/DSL-AshArchival.Resource.md",
