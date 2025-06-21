@@ -4,15 +4,6 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   require Ash.Query
 
   def change(changeset, _, context) do
-    context =
-      case AshArchival.Resource.Info.archive_archive_related_authorize?(changeset.resource) do
-        true ->
-          %{context | authorize?: context.authorize?}
-
-        _ ->
-          %{context | authorize?: false}
-      end
-
     Ash.Changeset.after_action(changeset, fn changeset, result ->
       archive_related(
         [result],
@@ -77,6 +68,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
       |> Ash.Context.to_opts(
         domain: domain,
         return_errors?: true,
+        authorize?: AshArchival.Resource.Info.archive_archive_related_authorize?(resource),
         strategy: [:stream, :atomic, :atomic_batches]
       )
 
