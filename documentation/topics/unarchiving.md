@@ -33,7 +33,7 @@ Resource
 |> Ash.update!()
 ```
 
-More idiomatically, you would define a code interfaceon the domain, and call that:
+More idiomatically, you would define a code interface on the domain, and call that:
 
 ```elixir
 # to unarchive by `id`
