@@ -67,9 +67,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
       context
       |> Ash.Context.to_opts(
         domain: domain,
-        return_errors?: true,
-        authorize?: AshArchival.Resource.Info.archive_archive_related_authorize?(resource),
-        strategy: [:stream, :atomic, :atomic_batches]
+        authorize?: AshArchival.Resource.Info.archive_archive_related_authorize?(resource)
       )
 
     archive_related =
@@ -99,7 +97,11 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
             query,
             destroy_action,
             arguments,
-            Keyword.put(opts, :context, context)
+            Keyword.merge(opts,
+              context: context,
+              return_errors?: true,
+              strategy: [:stream, :atomic, :atomic_batches]
+            )
           )
 
         :error ->
@@ -120,7 +122,11 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
           |> Ash.bulk_destroy!(
             destroy_action,
             %{},
-            Keyword.put(opts, :context, context)
+            Keyword.merge(opts,
+              context: context,
+              return_errors?: true,
+              strategy: [:stream, :atomic, :atomic_batches]
+            )
           )
       end
     end)
