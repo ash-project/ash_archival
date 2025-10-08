@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Zach Daniel
+
+SPDX-License-Identifier: MIT
+-->
+
 ## Upgrading to 1.0
 
 ## Implementation changed from base_filter to preparations

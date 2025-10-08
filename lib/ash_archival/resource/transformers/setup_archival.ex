@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Zach Daniel
+#
+# SPDX-License-Identifier: MIT
+
 defmodule AshArchival.Resource.Transformers.SetupArchival do
   @moduledoc false
   # Sets up the required resource structure for archival

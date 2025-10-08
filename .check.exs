@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Zach Daniel
+#
+# SPDX-License-Identifier: MIT
+
 [
   ## all available options with default values (see `mix check` docs for description)
   # parallel: true,
@@ -13,6 +17,7 @@
     # {:credo, "mix credo --format oneline"},
 
     {:check_formatter, command: "mix spark.formatter --check"},
+    {:reuse, command: ["pipx", "run", "reuse", "lint", "-q"]}
     ## custom new tools may be added (mix tasks or arbitrary commands)
     # {:my_mix_task, command: "mix release", env: %{"MIX_ENV" => "prod"}},
     # {:my_arbitrary_tool, command: "npm test", cd: "assets"},

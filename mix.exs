@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Zach Daniel
+#
+# SPDX-License-Identifier: MIT
+
 defmodule AshArchival.MixProject do
   use Mix.Project
 
@@ -33,12 +37,20 @@ defmodule AshArchival.MixProject do
 
   defp package do
     [
-      name: :ash_archival,
+      maintainers: [
+        "Zach Daniel <zach@zachdaniel.dev>"
+      ],
       licenses: ["MIT"],
       files: ~w(lib .formatter.exs mix.exs README* LICENSE*
       CHANGELOG* documentation),
       links: %{
-        GitHub: "https://github.com/ash-project/ash_archival"
+        "GitHub" => "https://github.com/ash-project/ash_archival",
+        "Changelog" => "https://github.com/ash-project/ash_archival/blob/main/CHANGELOG.md",
+        "Discord" => "https://discord.gg/HTHRaaVPUc",
+        "Website" => "https://ash-hq.org",
+        "Forum" => "https://elixirforum.com/c/elixir-framework-forums/ash-framework-forum",
+        "REUSE Compliance" =>
+          "https://api.reuse.software/info/github.com/ash-project/ash_archival"
       }
     ]
   end

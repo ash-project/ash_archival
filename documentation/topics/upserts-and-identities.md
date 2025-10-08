@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Zach Daniel
+
+SPDX-License-Identifier: MIT
+-->
+
 # Upserts & Identities
 
 Its important to consider identities when using AshArchival _without_ a `base_filter` set up.

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Zach Daniel
+#
+# SPDX-License-Identifier: MIT
+
 defmodule AshArchival.ArchiveRelatedArguments do
   @moduledoc """
   The behaviour for specifiying arguments for related resources
