@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Zach Daniel
+
+SPDX-License-Identifier: MIT
+-->
+
 # Upgrading to 2.0
 
 This guide covers the key changes when upgrading to AshArchival 2.0.

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Zach Daniel
+#
+# SPDX-License-Identifier: MIT
+
 defmodule AshArchival.TestRepo.Migrations.AddPosts do
   @moduledoc """
   Updates resources based on their most recent snapshots.

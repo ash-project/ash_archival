@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Zach Daniel
+#
+# SPDX-License-Identifier: MIT
+
 defmodule AshArchival.Resource.Preparations.FilterArchived do
   @moduledoc false
   use Ash.Resource.Preparation

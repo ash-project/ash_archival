@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Zach Daniel
+
+SPDX-License-Identifier: MIT
+-->
+
 # How does Archival Work?
 
 We make modifications to the resource to enable soft deletes. Here's a breakdown of what the extension does:
