@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 First, add the dependency to your `mix.exs` file
 
 ```elixir
-{:ash_archival, "~> 2.0.2"}
+{:ash_archival, "~> 2.0.3"}
 ```
 
 and add `:ash_archival` to your `.formatter.exs`

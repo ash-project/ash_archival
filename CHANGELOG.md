@@ -11,6 +11,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v2.0.3](https://github.com/ash-project/ash_archival/compare/v2.0.2...v2.0.3) (2025-11-05)
+
+
+
+
+### Bug Fixes:
+
+* don't set invalid options for load by Zach Daniel
+
 ## [v2.0.2](https://github.com/ash-project/ash_archival/compare/v2.0.1...v2.0.2) (2025-09-22)
 
 
