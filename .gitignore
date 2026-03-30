@@ -28,3 +28,4 @@ archival-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+test/scratch_test.exs

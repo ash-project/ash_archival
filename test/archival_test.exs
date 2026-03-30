@@ -5,6 +5,8 @@
 defmodule ArchivalTest do
   use ExUnit.Case
 
+  require Ash.Query
+
   defmodule Author do
     use Ash.Resource,
       domain: ArchivalTest.Domain,
@@ -213,6 +215,84 @@ defmodule ArchivalTest do
     end
   end
 
+  # Resource for testing update behaviour on archived records across
+  # different action configurations and code paths.
+  defmodule UpdatableRecord do
+    use Ash.Resource,
+      domain: ArchivalTest.Domain,
+      data_layer: Ash.DataLayer.Ets,
+      extensions: [AshArchival.Resource]
+
+    ets do
+      table(:updatable_records)
+      private?(true)
+    end
+
+    archive do
+      exclude_read_actions(:all_records)
+    end
+
+    actions do
+      default_accept(:*)
+      defaults([:create, :read, :destroy])
+
+      read :all_records do
+        pagination(keyset?: true, required?: false)
+      end
+
+      # Non-atomic: both require_atomic? and atomic_upgrade? are false
+      update :non_atomic_update do
+        require_atomic?(false)
+        atomic_upgrade?(false)
+      end
+
+      # Atomic: require_atomic? true, uses primary read (has archival filter)
+      update :atomic_update do
+        require_atomic?(true)
+      end
+
+      # Atomic with upgrade: atomic_upgrade? true, uses primary read (has archival filter)
+      update :atomic_upgrade_update do
+        require_atomic?(false)
+        atomic_upgrade?(true)
+      end
+
+      # Atomic with excluded read: uses a read action that skips the archival filter
+      update :atomic_with_excluded_read do
+        require_atomic?(true)
+        atomic_upgrade_with(:all_records)
+      end
+    end
+
+    attributes do
+      uuid_primary_key(:id)
+      attribute(:name, :string, public?: true)
+    end
+  end
+
+  # Raw view of the same ETS table (no archival extension) for reading archived records
+  defmodule UpdatableRecordRaw do
+    use Ash.Resource,
+      domain: ArchivalTest.Domain,
+      data_layer: Ash.DataLayer.Ets
+
+    ets do
+      table(:updatable_records)
+      private?(true)
+    end
+
+    actions do
+      default_accept(:*)
+      defaults([:create, :read, :update, :destroy])
+    end
+
+    attributes do
+      uuid_primary_key(:id)
+      attribute(:name, :string, public?: true)
+      attribute(:archived_at, :utc_datetime_usec, public?: true)
+    end
+  end
+
   defmodule Domain do
     use Ash.Domain
 
@@ -224,6 +304,8 @@ defmodule ArchivalTest do
       resource(PostWithArchive)
       resource(Comment)
       resource(CommentWithArchive)
+      resource(UpdatableRecord)
+      resource(UpdatableRecordRaw)
     end
   end
 
@@ -345,6 +427,161 @@ defmodule ArchivalTest do
     [archived_comment] = Ash.read!(CommentWithArchive)
     assert archived_comment.id == comment.id
     assert archived_comment.archived_at
+  end
+
+  # Helper: create and archive a record, return it as a loaded UpdatableRecord struct
+  defp create_and_archive(name) do
+    record =
+      UpdatableRecord
+      |> Ash.Changeset.for_create(:create, %{name: name})
+      |> Ash.create!()
+
+    Ash.destroy!(record)
+
+    [archived] =
+      UpdatableRecordRaw
+      |> Ash.Query.filter(id == ^record.id)
+      |> Ash.read!()
+
+    %UpdatableRecord{
+      id: archived.id,
+      name: archived.name,
+      archived_at: archived.archived_at,
+      __meta__: %Ecto.Schema.Metadata{state: :loaded, source: "updatable_records"}
+    }
+  end
+
+  # Helper: read the actual ETS state to verify if an update really happened
+  defp read_raw(id) do
+    [record] =
+      UpdatableRecordRaw
+      |> Ash.Query.filter(id == ^id)
+      |> Ash.read!()
+
+    record
+  end
+
+  # ── Non-atomic path (require_atomic?: false, atomic_upgrade?: false) ──
+  # The non-atomic path calls Ash.DataLayer.update/2 directly with
+  # changeset.filter = nil, so the archival filter is never involved.
+
+  test "non-atomic update/2 on archived record succeeds and updates" do
+    archived = create_and_archive("original")
+
+    assert {:ok, updated} =
+             archived
+             |> Ash.Changeset.for_update(:non_atomic_update, %{name: "updated"})
+             |> Ash.update()
+
+    assert updated.name == "updated"
+    assert read_raw(archived.id).name == "updated"
+  end
+
+  test "non-atomic bulk_update/3 on archived record silently returns 0 records and does not update" do
+    archived = create_and_archive("original")
+
+    result =
+      Ash.bulk_update([archived], :non_atomic_update, %{name: "updated"},
+        resource: UpdatableRecord,
+        return_records?: true,
+        return_errors?: true
+      )
+
+    assert result.status == :success
+    assert result.records == []
+    assert result.error_count == 0
+    assert read_raw(archived.id).name == "original"
+  end
+
+  # ── Atomic path with default read (has archival filter) ──
+  # The atomic upgrade path builds a read query using the primary read action.
+  # AshArchival's FilterArchived preparation adds is_nil(archived_at) to that
+  # query, so it returns 0 rows for archived records.
+
+  test "atomic update/2 on archived record raises StaleRecord" do
+    archived = create_and_archive("original")
+
+    assert {:error, %Ash.Error.Invalid{errors: [%Ash.Error.Changes.StaleRecord{}]}} =
+             archived
+             |> Ash.Changeset.for_update(:atomic_update, %{name: "updated"})
+             |> Ash.update()
+
+    assert read_raw(archived.id).name == "original"
+  end
+
+  test "atomic_upgrade update/2 on archived record raises StaleRecord" do
+    archived = create_and_archive("original")
+
+    assert {:error, %Ash.Error.Invalid{errors: [%Ash.Error.Changes.StaleRecord{}]}} =
+             archived
+             |> Ash.Changeset.for_update(:atomic_upgrade_update, %{name: "updated"})
+             |> Ash.update()
+
+    assert read_raw(archived.id).name == "original"
+  end
+
+  test "atomic bulk_update/3 on archived record silently returns 0 records and does not update" do
+    archived = create_and_archive("original")
+
+    result =
+      Ash.bulk_update([archived], :atomic_update, %{name: "updated"},
+        resource: UpdatableRecord,
+        return_records?: true,
+        return_errors?: true
+      )
+
+    assert result.status == :success
+    assert result.records == []
+    assert result.error_count == 0
+    assert read_raw(archived.id).name == "original"
+  end
+
+  test "atomic_upgrade bulk_update/3 on archived record silently returns 0 records and does not update" do
+    archived = create_and_archive("original")
+
+    result =
+      Ash.bulk_update([archived], :atomic_upgrade_update, %{name: "updated"},
+        resource: UpdatableRecord,
+        return_records?: true,
+        return_errors?: true
+      )
+
+    assert result.status == :success
+    assert result.records == []
+    assert result.error_count == 0
+    assert read_raw(archived.id).name == "original"
+  end
+
+  # ── Atomic path with excluded read (no archival filter) ──
+  # When atomic_upgrade_with points to a read action excluded from AshArchival,
+  # the archival filter is not applied, so the record is found and updated.
+
+  test "atomic update/2 with excluded read on archived record succeeds and updates" do
+    archived = create_and_archive("original")
+
+    assert {:ok, updated} =
+             archived
+             |> Ash.Changeset.for_update(:atomic_with_excluded_read, %{name: "updated"})
+             |> Ash.update()
+
+    assert updated.name == "updated"
+    assert read_raw(archived.id).name == "updated"
+  end
+
+  test "atomic bulk_update/3 with excluded read on archived record succeeds and updates" do
+    archived = create_and_archive("original")
+
+    result =
+      Ash.bulk_update([archived], :atomic_with_excluded_read, %{name: "updated"},
+        resource: UpdatableRecord,
+        return_records?: true,
+        return_errors?: true
+      )
+
+    assert result.status == :success
+    assert [%{name: "updated"}] = result.records
+    assert result.error_count == 0
+    assert read_raw(archived.id).name == "updated"
   end
 
   test "destroyed records can be returned" do
