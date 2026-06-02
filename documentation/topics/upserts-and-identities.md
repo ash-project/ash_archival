@@ -29,6 +29,18 @@ active records while preserving archived data.
 
 When you upsert a record using this identity, it will only consider active records.
 
+### Using Ash Postgres?
+If using [`Ash Postgres`](https://ash-postgres.hexdocs.pm/readme.html) you will also have to add a corresponding [`identity_wheres_to_sql`](https://ash-postgres.hexdocs.pm/AshPostgres.DataLayer.Info.html#identity_wheres_to_sql/1).
+
+For example:
+
+```elixir
+postgres do
+...
+  identity_wheres_to_sql unique_email: "archived_at IS NULL"
+end
+```
+
 ## Without `is_nil(archived_at)`
 
 This identity configuration enforces strict email uniqueness across all records. Once an email is used, it can't be used
