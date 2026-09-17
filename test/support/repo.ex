@@ -21,8 +21,17 @@ defmodule AshArchival.TestRepo do
 
   def min_pg_version do
     case System.get_env("PG_VERSION") do
-      nil -> %Version{major: 16, minor: 0, patch: 0}
-      version -> Version.parse!(version)
+      nil ->
+        %Version{major: 16, minor: 0, patch: 0}
+
+      version ->
+        # CI passes a major version only, e.g. "16"; `Version` wants "16.0.0".
+        version
+        |> String.split(".")
+        |> Enum.concat(["0", "0"])
+        |> Enum.take(3)
+        |> Enum.join(".")
+        |> Version.parse!()
     end
   end
 end
