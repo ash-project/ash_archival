@@ -8,7 +8,7 @@ defmodule AshArchival.Resource.Transformers.SetupArchival do
   use Spark.Dsl.Transformer
 
   @after_transformers [
-    Ash.Resource.Transformers.ValidatePrimaryActions
+    Ash.Resource.Transformers.SetPrimaryActions
   ]
 
   @before_transformers [
