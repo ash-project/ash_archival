@@ -11,6 +11,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v2.0.4](https://github.com/ash-project/ash_archival/compare/v2.0.3...v2.0.4) (2026-10-14)
+
+
+
+
+### Bug Fixes:
+
+* ensure transformer ordering by Zach Daniel
+
 ## [v2.0.3](https://github.com/ash-project/ash_archival/compare/v2.0.2...v2.0.3) (2025-11-05)
 
 
