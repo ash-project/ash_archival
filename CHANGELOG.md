@@ -11,6 +11,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v2.0.5](https://github.com/ash-project/ash_archival/compare/v2.0.4...v2.0.5) (2026-10-19)
+
+
+
+
+### Bug Fixes:
+
+* support temporal on archival and archive related by Zach Daniel
+
 ## [v2.0.4](https://github.com/ash-project/ash_archival/compare/v2.0.3...v2.0.4) (2026-10-14)
 
 
