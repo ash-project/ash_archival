@@ -113,7 +113,7 @@ defmodule AshArchival.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ash, ash_version("~> 3.0 and >= 3.0.5")},
+      {:ash, ash_version("~> 3.34")},
       # dev/test dependencies
       {:ash_postgres, "~> 2.3", only: [:dev, :test]},
       {:simple_sat, "~> 0.1.0", only: [:dev, :test]},

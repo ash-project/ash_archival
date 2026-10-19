@@ -6,6 +6,8 @@ defmodule AshArchival.Resource.Preparations.FilterArchived do
   @moduledoc false
   use Ash.Resource.Preparation
 
+  def temporal_safe?(_opts), do: true
+
   def prepare(query, _, _) do
     excluded_actions =
       AshArchival.Resource.Info.archive_exclude_read_actions!(query.resource)

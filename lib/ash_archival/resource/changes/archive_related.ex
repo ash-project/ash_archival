@@ -7,6 +7,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   use Ash.Resource.Change
   require Ash.Query
 
+  def temporal_safe?(_opts), do: true
+
   def change(changeset, _, context) do
     Ash.Changeset.after_action(changeset, fn changeset, result ->
       archive_related(
@@ -14,7 +16,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
         changeset.resource,
         changeset.domain,
         changeset.arguments,
-        context
+        context,
+        changeset.as_of
       )
 
       {:ok, result}
@@ -26,7 +29,14 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
   end
 
   def after_atomic(changeset, _, record, context) do
-    archive_related([record], changeset.resource, changeset.domain, changeset.arguments, context)
+    archive_related(
+      [record],
+      changeset.resource,
+      changeset.domain,
+      changeset.arguments,
+      context,
+      changeset.as_of
+    )
 
     :ok
   end
@@ -40,7 +50,8 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
       first_changeset.resource,
       first_changeset.domain,
       first_changeset.arguments,
-      context
+      context,
+      first_changeset.as_of
     )
 
     Enum.map(records, fn result ->
@@ -62,11 +73,11 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
     |> Enum.any?()
   end
 
-  defp archive_related([], _, _, _, _) do
+  defp archive_related([], _, _, _, _, _) do
     :ok
   end
 
-  defp archive_related(data, resource, domain, arguments, context) do
+  defp archive_related(data, resource, domain, arguments, context, as_of) do
     opts =
       context
       |> Ash.Context.to_opts(
@@ -79,6 +90,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
 
     Enum.each(archive_related, fn relationship ->
       relationship = Ash.Resource.Info.relationship(resource, relationship)
+      destroy_opts = with_as_of(opts, as_of, relationship.destination)
 
       destroy_action =
         Ash.Resource.Info.primary_action!(relationship.destination, :destroy).name
@@ -90,7 +102,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
         end
 
       context =
-        opts[:context]
+        destroy_opts[:context]
         |> Kernel.||(%{})
         |> Map.put(:ash_archival, true)
         |> Ash.Helpers.deep_merge_maps(relationship.context || %{})
@@ -101,7 +113,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
             query,
             destroy_action,
             arguments,
-            Keyword.merge(opts,
+            Keyword.merge(destroy_opts,
               context: context,
               return_errors?: true,
               strategy: [:stream, :atomic, :atomic_batches]
@@ -126,7 +138,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
           |> Ash.bulk_destroy!(
             destroy_action,
             %{},
-            Keyword.merge(opts,
+            Keyword.merge(destroy_opts,
               context: context,
               return_errors?: true,
               strategy: [:stream, :atomic, :atomic_batches]
@@ -135,6 +147,23 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
       end
     end)
   end
+
+  defp with_as_of(opts, as_of, destination) when not is_nil(as_of) do
+    if Ash.Resource.Info.temporal?(destination) do
+      opts
+      |> Keyword.put(:as_of, as_of)
+      |> Keyword.update(:context, %{}, &drop_shared_as_of/1)
+    else
+      opts
+    end
+  end
+
+  defp with_as_of(opts, _as_of, _destination), do: opts
+
+  defp drop_shared_as_of(%{shared: %{} = shared} = context),
+    do: %{context | shared: Map.delete(shared, :as_of)}
+
+  defp drop_shared_as_of(context), do: context
 
   # An advanced optimization to be made here is to use lateral join context,
   # allowing us not to fetch this relationship in the case that data layers
