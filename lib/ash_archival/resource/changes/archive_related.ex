@@ -16,7 +16,7 @@ defmodule AshArchival.Resource.Changes.ArchiveRelated do
         changeset.resource,
         changeset.domain,
         changeset.arguments,
-        context,
+        %{context | source_context: changeset.context},
         changeset.as_of
       )
 
